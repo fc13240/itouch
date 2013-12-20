@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html> 
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta id="viewport" name="viewport" content="width=320; initial-scale=1;maximum-scale=1; user-scalable=no;"/>
+<script type="text/javascript" src="http://i.tq121.com.cn/j/jquery-1.8.2.js"></script>
+<style type="text/css">
+*{margin: 0; padding: 0;}
+</style>
+</head>   
+<body>
+<div id="pr" style="height:420px; width: 100%; overflow: hidden; background: red; margin: 0 auto;">
+    <img id="canvas" src="../JTouch/images/003.jpg" style="position: relative; top: 0; left: 0;"/>
+</div>
+<div id="info"></div>
+  
+<script type="text/javascript">
+$("#canvas")[0].onload=function(){
+    var canvas = $("#canvas");//图片
+    var info =$("#info");//信息区域
+    var pr  =$("#pr");//父级
+    pr.css("height",$(window).height());
+    var prs =pr[0];
+    var pic = canvas[0];
+    var isacle =false;//是否是缩放状态
+    var f_h = canvas.height();//图片实际宽度
+    var p_h =pr.height();//父级高度
+    var p_w = pr.width();//父级宽度
+    //适应宽度
+    var setsize = function(){
+        pic.style.height = pic.offsetHeight * p_w / pic.offsetWidth+1 +"px";
+    };
+    setsize();
+    //居中
+    var tocenter = function(){
+        pic.style.left =( p_w - pic.offsetWidth )/2 +"px";
+        pic.style.top =( p_h - pic.offsetHeight)/2 +"px";
+    };
+    tocenter();
+      
+    pr.bind("touchstart touchend touchmove",function(event){
+        event.preventDefault();
+    });
+    pr.bind("touchstart.move",function(){
+        if(event.touches.length==1){
+            isacle =false;
+            var touch =event.touches[0];
+            x = touch.pageX-pic.offsetLeft+prs.offsetLeft, y = touch.pageY-pic.offsetTop+prs.offsetTop;
+        }
+    });
+      
+    var setlocation = function(obj,x,y){
+        obj.style.left = x+"px";
+        obj.style.top = y+"px";
+    };
+    pr.bind("touchmove.move",function(){
+        if(isacle) return;
+        if(event.touches.length==1){
+            var touch =event.touches[0];
+            var tem_x = touch.pageX-x,tem_y = touch.pageY-y;
+            setlocation(pic,tem_x,tem_y);
+        }
+    });
+      
+    pr.bind("touchstart.scale",function(){
+        if(event.touches.length==2){
+            isacle =true;
+            tocenter();
+            ht = pic.offsetHeight;
+            var t1 =event.touches[0];
+            var t2 =event.touches[1];
+            x1 = t1.pageX,y1 = t1.pageY;
+            x2 = t2.pageX,y2 = t2.pageY;
+        }
+    });
+      
+    pr.bind("touchmove.scale",function(){
+        if(event.touches.length==2){
+            var t1 =event.touches[0];
+            var t2 =event.touches[1];
+            var scale =( ( t2.pageX-t1.pageX) *( t2.pageY -t1.pageY) ) / ( ( x2 - x1 ) * (y2 - y1));
+            if(scale<1 && pic.offsetWidth<=120){
+                return;
+            }else if(scale>1 &&pic.offsetHeight>=f_h ){
+                pic.style.height =f_h +"px";
+                return;
+            }
+            pic.style.height =ht * scale +"px";
+            tocenter();
+        }
+    });
+      
+    $(window).resize(function(){
+        pr.css("height",$(window).height());
+         p_h =pr.height();//父级高度
+         p_w = pr.width();//父级宽度
+         setsize();//适应宽度
+         tocenter();
+    });
+      
+};
+</script> 
+</body>
+</html>

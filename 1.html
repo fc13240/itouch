@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Javascript Touch Event</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=device-dpi" />
+  <script src="js/touch.js"></script>
+  <style>
+  *{padding: 0;margin:0;}
+  body{
+  	overflow: hidden;
+  }
+  </style>
+</head>
+<body>
+	<div id="result" style="background-color:#ccc;width:300px;height:200px;border:1px solid blue;position:fixed;left:10px;top:300px;z-index:100;"></div>
+<div id='testDiv' style="text-align:center;position:relative;width:700px;height:30px;z-index:99;background:red;margin-top:400px;;">
+	<img id="testImg" src="../JTouch/images/003.jpg" style="position:absolute;left:50%;top:50%;width:600px;"/>
+</div>
+<script>
+var testImg = document.getElementById('testImg');
+var testDiv = document.getElementById('testDiv');
+var tt;
+var oldWidth,oldHeight;
+testImg.onload = function(){
+	oldWidth = testImg.offsetWidth;
+	oldHeight = testImg.offsetHeight;
+	testImg.style.marginLeft = -oldWidth/2+'px';
+	testImg.style.marginTop = -oldHeight/2+'px'
+}
+var print = function(){
+	document.getElementById('result').innerHTML = [].slice.call(arguments).join('<br/>');
+}
+
+function getNewOffset(scale){
+	var newWidth = oldWidth * scale,
+		newHeight = oldHeight * scale;
+	if(newWidth > 1000){
+		newHeight = newHeight*1000/newWidth;
+		newWidth = 1000;
+	}else if(newWidth < 300){
+		newHeight = newHeight*300/newWidth;
+		newWidth = 300;
+	}
+	return {
+		w: newWidth,
+		h: newHeight
+	}
+}
+new Scale(testImg,function(d){
+	var scale = d.scale;
+
+	var offset = getNewOffset(scale);
+	var newWidth = offset.w,
+		newHeight = offset.h;
+	print('move',scale,newWidth,newHeight,oldWidth,oldHeight);
+	
+	testImg.style.width = newWidth + 'px';
+	testImg.style.height = newHeight + 'px';
+	testImg.style.marginLeft = -(newWidth/2)+'px';
+	testImg.style.marginTop = -(newHeight/2)+'px';
+},function(d){
+	var scale = d.scale;
+	if(scale){
+		var offset = getNewOffset(scale);
+		var newWidth = offset.w,
+			newHeight = offset.h;
+		print('end',scale,newWidth,newHeight,oldWidth,oldHeight);
+		oldWidth = newWidth;
+		oldHeight = newHeight;
+	}
+});
+</script>
+</body></html>
