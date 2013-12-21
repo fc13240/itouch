@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta content="yes" name="apple-mobile-web-app-capable"/>
+	<meta content="yes" name="apple-touch-fullscreen"/>
+	<meta content="telephone=no" name="format-detection"/>
+	<meta content="black" name="apple-mobile-web-app-status-bar-style">
+	<title></title>
+	<meta name="revisit-after"  content="1 days" />
+	<meta name="keywords" content="" />
+	<meta name="description" content="" />
+	<meta name="viewport" content="width=320,initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+	<link type="text/css" rel="stylesheet" media="screen" href="./2.css" />
+	<script src="./js/jquery-1.8.2.js"></script>
+	<script src="./js/4.js"></script>
+<body>
+	<div id="main">
+		<nav id="sort_nav">
+			<ul>
+				<li class="big">降水产品</li>
+				<li data-id="wendu">24小时降水实况</li>
+				<li data-id="feng">24小时降水预报</li>
+				<li class="big">温度产品</li>
+				<li data-id="wuran">05点24小时变温</li>
+				<li data-id="wuran">最低气温预报</li>
+			</ul>
+		</nav>
+		<div id="main_container">
+			<div class="top_layer">
+				<div class="btn_nav">
+					<span></span>
+					<span></span>
+					<span></span>
+				</div>
+				<h1>降水产品-24小时天气预报</h1>
+			</div>
+			<div id="operator" style="position:absolute;left:0;top:43px;width:510px;height:430px;">
+				<img id="testImg" src="./img/js_sk.jpg" style="width:100%;height:100%;"/>
+				<div style="position:absolute;left:50%;top:50%;background:red;z-index:100;width:10px;height:10px;margin-left:-5px;margin-top:5px;"></div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+	$(function(){
+		var win = $(window);
+		var w = win.width();
+		var h = win.height();
+		$('#main').width(w).height(h);
+		$('#sort_nav ul,#main_container').height(h);
+	})
+	</script>
+</body>
+</html>

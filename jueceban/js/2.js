@@ -52,37 +52,39 @@
 				$obj.on('touchend',fnEnd);
 			}
 			else if(len == 1){
-				$obj.trigger('MoveStart',eStart);
-				var startTime = new Date().getTime();
-				var startTouchEvent = touches[0];
-				var startX = startTouchEvent.pageX,
-					startY = startTouchEvent.pageY;
-				var moveX,moveY;
-				var fnMove = function(eMove){
-					eMove.preventDefault();
-					$obj.trigger('TouchMove',eMove);
-					var moveTouchEvent = eMove.originalEvent.touches[0];
-					moveX = moveTouchEvent.pageX;
-					moveY = moveTouchEvent.pageY;
-					$obj.trigger('Moving',{
-						xStep: moveX - startX,
-						yStep: moveY - startY
-					});
-				};
-				var fnEnd = function(){
-					var endTime = new Date().getTime();
-					if(endTime - startTime < 500){
-						var eventType = moveX - startX < 0?'SwipeLeft': 'SwipeRight';
-						$obj.trigger(eventType);
+				setTimeout(function(){
+					$obj.trigger('MoveStart',eStart);
+					var startTime = new Date().getTime();
+					var startTouchEvent = touches[0];
+					var startX = startTouchEvent.pageX,
+						startY = startTouchEvent.pageY;
+					var moveX,moveY;
+					var fnMove = function(eMove){
+						eMove.preventDefault();
+						$obj.trigger('TouchMove',eMove);
+						var moveTouchEvent = eMove.originalEvent.touches[0];
+						moveX = moveTouchEvent.pageX;
+						moveY = moveTouchEvent.pageY;
+						$obj.trigger('Moving',{
+							xStep: moveX - startX,
+							yStep: moveY - startY
+						});
+					};
+					var fnEnd = function(){
+						var endTime = new Date().getTime();
+						if(endTime - startTime < 500){
+							var eventType = moveX - startX < 0?'SwipeLeft': 'SwipeRight';
+							$obj.trigger(eventType);
+						}
+						$obj.trigger('TouchEnd');
+						$obj.trigger('MoveEnd');
+						$obj.off('touchend',fnEnd);
+						$obj.off('touchmove',fnMove);
 					}
-					$obj.trigger('TouchEnd');
-					$obj.trigger('MoveEnd');
-					$obj.off('touchend',fnEnd);
-					$obj.off('touchmove',fnMove);
-				}
 
-				$obj.on('touchmove',fnMove);
-				$obj.on('touchend',fnEnd);
+					$obj.on('touchmove',fnMove);
+					$obj.on('touchend',fnEnd);
+				},100)
 			}
 		});
 	}
