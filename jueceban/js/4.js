@@ -17,13 +17,10 @@
 			b = touches[1];
 		return Math.sqrt(pow(a.pageX-b.pageX)+pow(a.pageY-b.pageY));
 	}
-	$(function(){
-		result = $('<div style="position:fixed;z-index:101;left:10px;top:100px;width:300px;height:100px;background:rgba(100,100,100,0.3);"></div>').appendTo($('body'));
-	});
+	// $(function(){
+	// 	result = $('<div style="position:fixed;z-index:101;left:10px;top:100px;width:300px;height:100px;background:rgba(100,100,100,0.3);"></div>').appendTo($('body'));
+	// });
 	var TouchEvent = function($obj){
-		var touchLenName = 't_l';
-		var lineLenName = 't_l_l';
-		var startOffsetName = 't_s_o';
 		$obj.on('touchstart',function(eStart){
 			eStart.preventDefault();
 			//防止事件重复绑定
@@ -38,11 +35,10 @@
 				var startX = startTouchEvent.pageX,
 					startY = startTouchEvent.pageY;
 			}
-			// $obj.data(touchLenName,len);
 			var moveX,moveY;
-			$obj.on('touchmove',function(eMove){result.html(len+'<br/>'+result.html());
+			var scalecache;
+			$obj.on('touchmove',function(eMove){
 				eMove.preventDefault();
-				// var len = $obj.data(touchLenName);
 				var moveTouchEvent = eMove.originalEvent.touches;
 				if(len == 2){
 					var moveLineLen = lineLength(moveTouchEvent);
@@ -70,74 +66,17 @@
 				}
 				var eventType = moveX - startX < 0?'SwipeLeft': 'SwipeRight';
 				$obj.trigger(eventType);
-			
-				$obj.trigger('MoveEnd',{
-					xStep: moveX - startX,
-					yStep: moveY - startY
-				});
-				$obj.removeData(touchLenName);
+				if(!isNaN(moveX) && !isNaN(startX)){
+					$obj.trigger('MoveEnd',{
+						xStep: moveX - startX,
+						yStep: moveY - startY
+					});
+				}
+				
 				$obj.off('touchend');
 				$obj.off('touchmove');
 			});
 			// result.html(len+'<br/>'+result.html());
-			// if(len == 2){
-			// 	var startLineLen = lineLength(touches);
-			// 	var fnMove = function(eMove){
-			// 		eMove.preventDefault();
-			// 		$obj.trigger('TouchMove',eMove);
-			// 		var touchesMove = eMove.originalEvent.touches;
-			// 		var moveLineLen = lineLength(touchesMove);
-
-			// 		var scale = moveLineLen/startLineLen;
-			// 		scalecache = scale;
-			// 		$obj.trigger('Scale',{
-			// 			scale: scale
-			// 		});
-			// 	}
-			// 	var fnEnd = function(){
-			// 		$obj.trigger('ScaleEnd',{
-			// 			scale: scalecache
-			// 		});
-			// 		$obj.trigger('TouchEnd');
-			// 		$obj.off('touchend',fnEnd);
-			// 		$obj.off('touchmove',fnMove);
-			// 	};
-			// 	$obj.on('touchmove',fnMove);
-			// 	$obj.on('touchend',fnEnd);
-			// }
-			// else if(len == 1){
-			// 	$obj.trigger('MoveStart',eStart);
-			// 	var startTouchEvent = touches[0];
-			// 	var startX = startTouchEvent.pageX,
-			// 		startY = startTouchEvent.pageY;
-			// 	var moveX,moveY;
-			// 	var fnMove = function(eMove){
-			// 		eMove.preventDefault();
-			// 		$obj.trigger('TouchMove',eMove);
-			// 		var moveTouchEvent = eMove.originalEvent.touches[0];
-			// 		moveX = moveTouchEvent.pageX;
-			// 		moveY = moveTouchEvent.pageY;
-			// 		$obj.trigger('Moving',{
-			// 			xStep: moveX - startX,
-			// 			yStep: moveY - startY
-			// 		});
-			// 	};
-			// 	var fnEnd = function(){
-			// 		var eventType = moveX - startX < 0?'SwipeLeft': 'SwipeRight';
-			// 		$obj.trigger(eventType);
-				
-			// 		$obj.trigger('MoveEnd',{
-			// 			xStep: moveX - startX,
-			// 			yStep: moveY - startY
-			// 		});
-			// 		$obj.trigger('TouchEnd');
-			// 		$obj.off('touchend',fnEnd);
-			// 		$obj.off('touchmove',fnMove);
-			// 	}
-
-			// 	$obj.on('touchmove',fnMove);
-			// 	$obj.on('touchend',fnEnd);
-			// }
 		});
 	}
 	global.TouchEvent = TouchEvent;
@@ -172,6 +111,7 @@ $(function(){
 		top: offset.top
 	}
 	var MAX_SCALE = 3;
+	var $middleDot = $operator.find('div');
 	$operator.on('Scale',function(e,d){
 		var scale = d.scale*data.scale;
 		if(scale > MAX_SCALE){
@@ -187,31 +127,44 @@ $(function(){
 		}
 		data.scale = scale;
 		
-		// var newWidth = data.width * scale;
-		// var newHeight = data.height * scale;
-		// var newLeft = data.left - (newWidth - data.width)/2;
-		// var newTop = data.top - (newHeight - data.height)/2;
-		// $operator.css({
-		// 	transform: 'scale(1,1)',
-		// 	width: newWidth,
-		// 	height: newHeight,
-		// 	left: newLeft,
-		// 	top: newTop
-		// });
-		// data = {
-		// 	scale: 1,
-		// 	width: newWidth,
-		// 	height: newHeight,
-		// 	left: newLeft,
-		// 	top: newTop
-		// }
+		var newWidth = data.width * scale;
+		var newHeight = data.height * scale;
+		/*这里保证缩放点在屏幕中间即可*/
+		var newLeft = data.left - (newWidth - data.width)/2;
+		var newTop = data.top - (newHeight - data.height)/2;
+		var num = $operator.css('transform-origin').split(' ');
+		var middle_x = parseFloat(num[0]);
+		var middle_y = parseFloat(num[1]);
+		var transform_origin = middle_x*scale+'px '+(middle_y*scale)+'px';
+		$middleDot.css({
+			left: middle_x*scale,
+			top: middle_y*scale
+		})
+		// var newLeft = data.left - middle_x*scale/2;
+		// var newTop = data.top - middle_y*scale/2;
+		// alert(parseFloat(num[0])/newWidth);
+		$operator.css({
+			transform: 'scale(1,1)',
+			'transform-origin': transform_origin,
+			width: newWidth,
+			height: newHeight,
+			left: newLeft,
+			top: newTop
+		});
+		data = {
+			scale: 1,
+			width: newWidth,
+			height: newHeight,
+			left: newLeft,
+			top: newTop
+		}
 	}).on('MoveStart',function(){
 
 	}).on('Move',function(e,d){
 		var xStep = d.xStep,
 			yStep = d.yStep;
 		var newLeft = data.left + xStep;
-		var newTop = data.top + yStep
+		var newTop = data.top + yStep;
 		$operator.css({
 			'left': newLeft,
 			'top': newTop
@@ -219,8 +172,16 @@ $(function(){
 	}).on('MoveEnd',function(e,d){
 		data.left += d.xStep;
 		data.top += d.yStep;
-		// alert(data.left+' '+data.top);
-		// movingData = {};
+		var num = $operator.css('transform-origin').split(' ');
+		var transform_origin = parseFloat(num[0]) - d.xStep+'px '+(parseFloat(num[1])-d.yStep)+'px';
+		// alert((parseFloat(num[0]))/data.width+'  '+transform_origin+' '+parseFloat(num[0]));
+		$operator.css('transform-origin',transform_origin);
+		$middleDot.css({
+			left: parseFloat(num[0]) - d.xStep,
+			top: parseFloat(num[1])-d.yStep
+		})
+		var num = $operator.css('transform-origin').split(' ');
+		// alert(transform_origin+"\n"+num);
 	});
 	TouchEvent($operator);
 })
