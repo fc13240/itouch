@@ -1,10 +1,7 @@
 (function(global){
 	var eventConfig = {
-		'TouchStart': null,
-		'TouchMove': null,
-		'TouchEnd': null,
-		'MoveStart': null,
-		'Moving': null,
+		// 'MoveStart': null,
+		'Move': null,
 		'MoveEnd': null,
 		'SwipeLeft': null,
 		'SwipeRight': null,
@@ -25,72 +22,122 @@
 	});
 	var TouchEvent = function($obj){
 		var touchLenName = 't_l';
+		var lineLenName = 't_l_l';
+		var startOffsetName = 't_s_o';
 		$obj.on('touchstart',function(eStart){
 			eStart.preventDefault();
-			$obj.trigger('TouchStart',eStart);
+			//防止事件重复绑定
+			$obj.off('touchend');
+			$obj.off('touchmove');
 			var touches = eStart.originalEvent.touches;
 			var len = touches.length;
-			$obj.data(touchLenName,len);
-			
-			result.html(len+'<br/>'+result.html());
 			if(len == 2){
 				var startLineLen = lineLength(touches);
-				var fnMove = function(eMove){
-					eMove.preventDefault();
-					$obj.trigger('TouchMove',eMove);
-					var touchesMove = eMove.originalEvent.touches;
-					var moveLineLen = lineLength(touchesMove);
-
+			}else if(len == 1){
+				var startTouchEvent = touches[0];
+				var startX = startTouchEvent.pageX,
+					startY = startTouchEvent.pageY;
+			}
+			// $obj.data(touchLenName,len);
+			var moveX,moveY;
+			$obj.on('touchmove',function(eMove){result.html(len+'<br/>'+result.html());
+				eMove.preventDefault();
+				// var len = $obj.data(touchLenName);
+				var moveTouchEvent = eMove.originalEvent.touches;
+				if(len == 2){
+					var moveLineLen = lineLength(moveTouchEvent);
 					var scale = moveLineLen/startLineLen;
 					scalecache = scale;
 					$obj.trigger('Scale',{
 						scale: scale
 					});
+				}else if(len == 1){
+					var eMove = moveTouchEvent[0];
+					moveX = eMove.pageX;
+					moveY = eMove.pageY;
+					$obj.trigger('Move',{
+						xStep: moveX - startX,
+						yStep: moveY - startY
+					});
 				}
-				var fnEnd = function(){
+			});
+			$obj.on('touchend',function(){
+				if(scalecache){
 					$obj.trigger('ScaleEnd',{
 						scale: scalecache
 					});
-					$obj.trigger('TouchEnd');
-					$obj.off('touchend',fnEnd);
-					$obj.off('touchmove',fnMove);
-				};
-				$obj.on('touchmove',fnMove);
-				$obj.on('touchend',fnEnd);
-			}
-			else if(len == 1){
-				$obj.trigger('MoveStart',eStart);
-				var startTouchEvent = touches[0];
-				var startX = startTouchEvent.pageX,
-					startY = startTouchEvent.pageY;
-				var moveX,moveY;
-				var fnMove = function(eMove){
-					eMove.preventDefault();
-					$obj.trigger('TouchMove',eMove);
-					var moveTouchEvent = eMove.originalEvent.touches[0];
-					moveX = moveTouchEvent.pageX;
-					moveY = moveTouchEvent.pageY;
-					$obj.trigger('Moving',{
-						xStep: moveX - startX,
-						yStep: moveY - startY
-					});
-				};
-				var fnEnd = function(){
-					var eventType = moveX - startX < 0?'SwipeLeft': 'SwipeRight';
-					$obj.trigger(eventType);
-				
-					$obj.trigger('MoveEnd',{
-						xStep: moveX - startX,
-						yStep: moveY - startY
-					});
-					$obj.trigger('TouchEnd');
-					$obj.off('touchend',fnEnd);
-					$obj.off('touchmove',fnMove);
+					scalecache = null;
 				}
+				var eventType = moveX - startX < 0?'SwipeLeft': 'SwipeRight';
+				$obj.trigger(eventType);
+			
+				$obj.trigger('MoveEnd',{
+					xStep: moveX - startX,
+					yStep: moveY - startY
+				});
+				$obj.removeData(touchLenName);
+				$obj.off('touchend');
+				$obj.off('touchmove');
+			});
+			// result.html(len+'<br/>'+result.html());
+			// if(len == 2){
+			// 	var startLineLen = lineLength(touches);
+			// 	var fnMove = function(eMove){
+			// 		eMove.preventDefault();
+			// 		$obj.trigger('TouchMove',eMove);
+			// 		var touchesMove = eMove.originalEvent.touches;
+			// 		var moveLineLen = lineLength(touchesMove);
 
-				$obj.on('touchmove',fnMove);
-				$obj.on('touchend',fnEnd);
-			}
+			// 		var scale = moveLineLen/startLineLen;
+			// 		scalecache = scale;
+			// 		$obj.trigger('Scale',{
+			// 			scale: scale
+			// 		});
+			// 	}
+			// 	var fnEnd = function(){
+			// 		$obj.trigger('ScaleEnd',{
+			// 			scale: scalecache
+			// 		});
+			// 		$obj.trigger('TouchEnd');
+			// 		$obj.off('touchend',fnEnd);
+			// 		$obj.off('touchmove',fnMove);
+			// 	};
+			// 	$obj.on('touchmove',fnMove);
+			// 	$obj.on('touchend',fnEnd);
+			// }
+			// else if(len == 1){
+			// 	$obj.trigger('MoveStart',eStart);
+			// 	var startTouchEvent = touches[0];
+			// 	var startX = startTouchEvent.pageX,
+			// 		startY = startTouchEvent.pageY;
+			// 	var moveX,moveY;
+			// 	var fnMove = function(eMove){
+			// 		eMove.preventDefault();
+			// 		$obj.trigger('TouchMove',eMove);
+			// 		var moveTouchEvent = eMove.originalEvent.touches[0];
+			// 		moveX = moveTouchEvent.pageX;
+			// 		moveY = moveTouchEvent.pageY;
+			// 		$obj.trigger('Moving',{
+			// 			xStep: moveX - startX,
+			// 			yStep: moveY - startY
+			// 		});
+			// 	};
+			// 	var fnEnd = function(){
+			// 		var eventType = moveX - startX < 0?'SwipeLeft': 'SwipeRight';
+			// 		$obj.trigger(eventType);
+				
+			// 		$obj.trigger('MoveEnd',{
+			// 			xStep: moveX - startX,
+			// 			yStep: moveY - startY
+			// 		});
+			// 		$obj.trigger('TouchEnd');
+			// 		$obj.off('touchend',fnEnd);
+			// 		$obj.off('touchmove',fnMove);
+			// 	}
+
+			// 	$obj.on('touchmove',fnMove);
+			// 	$obj.on('touchend',fnEnd);
+			// }
 		});
 	}
 	global.TouchEvent = TouchEvent;
@@ -125,7 +172,7 @@ $(function(){
 		top: offset.top
 	}
 	var MAX_SCALE = 3;
-	$operator.on('Scale',function(e,d){return;
+	$operator.on('Scale',function(e,d){
 		var scale = d.scale*data.scale;
 		if(scale > MAX_SCALE){
 			return;
@@ -133,7 +180,7 @@ $(function(){
 		$operator.css({
 			transform: 'scale('+scale+','+scale+')'
 		})
-	}).on('ScaleEnd',function(e,d){return;
+	}).on('ScaleEnd',function(e,d){
 		var scale = d.scale * data.scale;
 		if(scale > MAX_SCALE){
 			return;
@@ -160,7 +207,7 @@ $(function(){
 		// }
 	}).on('MoveStart',function(){
 
-	}).on('Moving',function(e,d){
+	}).on('Move',function(e,d){
 		var xStep = d.xStep,
 			yStep = d.yStep;
 		var newLeft = data.left + xStep;
