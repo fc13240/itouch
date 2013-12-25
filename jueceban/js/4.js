@@ -503,6 +503,7 @@ $(function() {
 		var $operator = $('#operator');
 		var player;
 		var isInitMap = false;
+		var global_jsonid;
 		var init = function(data_id){
 			if(player){
 				player.hide();
@@ -519,11 +520,17 @@ $(function() {
 				var text = items[toIndex].time;
 				player.showText(text||'');
 			}
-			if(type == 'img'){//渲染图片
+			/*清除map相关数据*/
+			var clearMap = function(){
+				$('#btn_back').remove();
 				if(isInitMap && gm){
 					gm.zr.clear();
 					isInitMap = false;
+					global_jsonid = null;
 				}
+			}
+			if(type == 'img'){//渲染图片
+				clearMap();
 				renderFn = function(toIndex,nextFn){
 					Loading.show();
 					$operator.html($('<img>').on('load',function(){
@@ -533,9 +540,7 @@ $(function() {
 				}
 			}else if(type == 'json'){//渲染地图数据
 				var colorType = COLOR[data.color];
-				var global_jsonid;
 				renderFn = function(toIndex,nextFn){
-
 					var fn = function(){
 						getJson(items[toIndex]['src'],function(pointData){
 							$.each(pointData.features,function(i,v){
@@ -585,6 +590,7 @@ $(function() {
 					}
 				}
 			}else if(type == 'hightchart'){
+				clearMap();
 				var fn = data.fnname;
 				fn = fnObj[fn];
 				fn && fn();
