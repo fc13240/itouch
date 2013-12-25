@@ -203,52 +203,79 @@
 	global.Loading = Loading;
 })(this);
 /*缓存JSON数据*/
-(function(global){
+(function(global) {
 	var DOC = document;
 	var head = document.head;
 	var cache = {}
-	var src_cache = {};
-	global.getJson = function(url,callback){
+	 src_cache = {};
+	var anonymity;
+	var isSafari = $.browser.safari;
+	global.getJson = function(url, callback) {
 		var val = cache[url];
-		if(val){
+		if (val) {
 			return val;
-		}else{
-			var src = document.createElement('script');
-			src.src = url + '?2?!'+url;
-			document.head.appendChild(src);
+		} else {
+			var node = document.createElement('script');
+			if(isSafari){//safari使用onload事件得到匿名数据
+				node.onload = function() {
+					exec(this.src);
+					anonymity = null;
+				}
+			}
+			
+			node.src = url + '?2?!' + url;
+			head.appendChild(node);
 			src_cache[url] = callback;
 		}
 	}
-	function getCurrentScript() {
-      //取得正在解析的script节点
-      if(DOC.currentScript) { //firefox 4+
-          return DOC.currentScript.src;
-      }
-      var stack, e, nodes = head.getElementsByTagName("script"); //只在head标签中寻找
-      //  参考 https://github.com/samyk/jiagra/blob/master/jiagra.js
-      try {
-          a.b.c(); //强制报错,以便捕获e.stack
-      } catch(e) {
-          stack = e.stack;
-      }
-      if(stack) {
-          // chrome IE10使用 at, firefox opera 使用 @
-          e = stack.indexOf(' at ') !== -1 ? ' at ' : '@';
-          while(stack.indexOf(e) !== -1) {
-              stack = stack.substring(stack.indexOf(e) + e.length);
-          }
-          return stack.replace(/:\d+:\d+$/ig, "");
-      }
-      for(i = 0; node = nodes[i++];) {
-          if( node.readyState === "interactive") {
-              return node.className = node.src;
-          }
-      }
-  }
-	global['_callback'] = function(data){
-		var url = getCurrentScript().split('?!')[1];
+	/*执行回调*/
+	function exec(url,data){
+		url = url.split('?!')[1];
+		data = data || anonymity;
 		var callback = src_cache[url];
+		delete src_cache[url];
 		callback && callback(data);
+	}
+	function getCurrentScript() {
+		//取得正在解析的script节点
+		if (DOC.currentScript) { //firefox 4+
+			return DOC.currentScript.src;
+		}
+
+		var stack, e;
+		//  参考 https://github.com/samyk/jiagra/blob/master/jiagra.js
+		try {
+			a.b.c(); //强制报错,以便捕获e.stack
+		} catch (e) {
+			stack = e.stack;
+			if (!stack && window.opera) {
+				//opera 9没有e.stack,但有e.Backtrace,但不能直接取得,需要对e对象转字符串进行抽取
+				stack = (String(e).match(/of linked script \S+/g) || []).join(" ");
+			}
+		}
+
+		if (stack) {
+			// chrome IE10使用 at, firefox opera 使用 @
+			e = stack.indexOf(' at ') !== -1 ? ' at ' : '@';
+			while (stack.indexOf(e) !== -1) {
+				stack = stack.substring(stack.indexOf(e) + e.length);
+			}
+			return stack.replace(/:\d+:\d+$/ig, "");
+		}
+		var nodes = head.getElementsByTagName("script"); //只在head标签中寻找
+		for (i = 0; node = nodes[i++];) {
+			if (node.readyState === "interactive") {
+				return node.src;
+			}
+		}
+	}
+	global['_callback'] = function(data) {
+		if(isSafari){
+			anonymity = data;
+		}else{
+			var url = getCurrentScript();
+			url && exec(url,data);
+		}
 	}
 })(this);
 
