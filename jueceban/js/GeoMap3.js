@@ -18,7 +18,7 @@ define("GeoMap",["zrender","zrender/tool/util"],
          * 1 : 异常抛出，调试用
          * 2 : 控制台输出，调试用
          */
-        seft.debugMode = 2;
+        seft.debugMode = 0;
         seft.log = function() {
             if (seft.debugMode === 0) {
                 return;

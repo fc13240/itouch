@@ -143,7 +143,7 @@ body{
 .btn_player{
 	width: 24px;
 	height: 27px;
-	background-image: url(img/icon.png);
+	background-image: url(../img/icon.png);
 	background-repeat: no-repeat;
 	background-position: -181px 0px;
 	margin: 0 10px;
@@ -192,7 +192,7 @@ body{
 .loading{
 	width: 16px;
 	height: 16px;
-	background: url(./img/loading.gif);
+	background: url(./../img/loading.gif);
 	position: fixed;
 	left: 50%;
 	top: 50%;
