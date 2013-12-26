@@ -328,7 +328,24 @@ $(function() {
 	// 	// transform: 'scale(1.2,1.2)',
 	// 	transform: 'scale(2,2)',
 	// });
-	
+	var oldData = $.extend({},data);
+	// 重置到原始尺寸和位置及缩放
+	function resetToOldOffset(callback){//alert(oldData.scale+' '+oldData.width+' '+oldData.height+' '+oldData.left+' '+oldData.top);
+		var scale = oldData.scale;
+		$operator.css({
+			transform: 'scale('+scale+','+scale+')',
+			'transform-origin': 'center center',
+			width: oldData.width,
+			height: oldData.height,
+			left: oldData.left,
+			top: oldData.top
+		});
+		scale_total = 1;
+		data = $.extend({},oldData);
+		gm && gm.resize();
+		callback && callback();
+		
+	}
 	/*绑定事件（缩放和拖拽）*/
 	function resetScale (scale){
 		var num = $operator.css('transform-origin').split(' ');
@@ -365,6 +382,7 @@ $(function() {
 			top: newTop
 		}
 		gm && gm.resize();
+		scale_total = 1;
 	}
 	$operator.on('Scale', function(e, d) {
 		var scale = d.scale * data.scale;
@@ -385,11 +403,10 @@ $(function() {
 			resetScale(scale);
 		}else if(scale_total > RESET_SCALE || scale_total < 1/RESET_SCALE){//放大或缩小一定倍数都进行重绘
 			resetScale(scale_total);
-			scale_total = 1;
 		}else{
 			data.scale = scale;
 		}
-	})
+	});
 	$main_container.on('Move', function(e, d) {
 		var xStep = d.xStep,
 			yStep = d.yStep;
@@ -491,8 +508,6 @@ $(function() {
 		// 		'transform-origin': transform_origin
 		// 	});	
 		// },500)
-		
-
 	});	
 	TouchEvent($operator);
 
@@ -503,7 +518,7 @@ $(function() {
 			"zrender/tool/util":'./js/zrender' 
         }
     });
-    /*本色方案*/
+    /*配色方案*/
 	var COLOR = {
 		'jiangshui': function(val){
 			val = parseFloat(val);
@@ -595,15 +610,20 @@ $(function() {
 								 		if(isNaN(jsonid)){
 									 		global_jsonid = jsonid;
 								 			getJson('./data/map/'+jsonid+'.geo.json',function(json){
-								 				var $btn_back = $('<div id="btn_back">返回</div>').appendTo($main_container).click(function(){
+								 				resetToOldOffset(function(){
 								 					gm.clear();
-													gm.load(mapData,{showName:false});
-													gm.refreshWeather();
-													$btn_back.remove();
+													gm.load(json,{showName:true});
+													gm.refreshWeather(jsonid);
+													var back = function(){
+														resetToOldOffset(function(){
+									 						gm.clear();
+															gm.load(mapData,{showName:false});
+															gm.refreshWeather();
+															$btn_back.remove();
+									 					});
+													}
+													var $btn_back = $('<div id="btn_back">返回</div>').appendTo($main_container).click(back);
 								 				});
-									 			gm.clear();
-												gm.load(json,{showName:true});
-												gm.refreshWeather(jsonid);
 									 		})
 								 		}
 								 	}
