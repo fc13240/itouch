@@ -18,7 +18,7 @@ define("GeoMap",["zrender","zrender/tool/util"],
          * 1 : 异常抛出，调试用
          * 2 : 控制台输出，调试用
          */
-        seft.debugMode = 0;
+        seft.debugMode = 2;
         seft.log = function() {
             if (seft.debugMode === 0) {
                 return;
@@ -40,6 +40,7 @@ define("GeoMap",["zrender","zrender/tool/util"],
 			var seft = this;
 			 seft.defaultCfg = {  //默认配置选项
 					offset:null,
+					showName:false,
 					mapStyle:{						
 						hoverable:false,
 						clickable:true,
@@ -49,8 +50,8 @@ define("GeoMap",["zrender","zrender/tool/util"],
 							color : '#D6E6DA',
 							textColor : "#f00",
 							textPosition : "left",
-							brushType : 'both'
-							
+							brushType : 'both',
+							textFont: '18px'
 						}
 					},
 					weatherStyle:{
@@ -81,7 +82,11 @@ define("GeoMap",["zrender","zrender/tool/util"],
 			seft.paths = null;
 			seft.weatherShapes = [];
 			var convertor = new  Convertor();
-			seft.load =function (json){
+			seft.load =function (json,cfg){
+				if (cfg){
+						util.mergeFast(cfg, seft.config,false,true);  
+						seft.config=cfg;
+				}
 				 seft.json=json;
 				 seft.paths = convertor.json2path(json, seft);
 				
@@ -96,21 +101,24 @@ define("GeoMap",["zrender","zrender/tool/util"],
 			}
 			
 			seft.loadWeather= function (json,showid){
-				
 				for (spaheid in seft.weatherShapes ){
 					seft.zr.delShape(seft.weatherShapes[spaheid]);
 				}
 				seft.weatherShapes = [];
 				seft.weatherjson = json;
-				
-				
 				seft.weatherpaths = convertor.json2path(json, seft);
+				if (showid){
+					seft.weatherShowid= showid ;
+				}else {
+					seft.weatherShowid= undefined ;
+				}
 				
 				for (i in seft.weatherpaths )
 				{
 					
 					if (showid)
 					{
+						seft.weatherShowid=showid;
 						geomap.log(seft.weatherpaths[i].pshapeId);
 						if (seft.weatherpaths[i].pshapeId != showid) continue;
 					}
@@ -139,6 +147,12 @@ define("GeoMap",["zrender","zrender/tool/util"],
 					}
 					seft.weatherShapes = [];
 					seft.weatherpaths = convertor.json2path(seft.weatherjson, seft);
+					if (showid){
+					seft.weatherShowid= showid ;
+				}else {
+					seft.weatherShowid= undefined ;
+				}
+					
 					for (i in seft.weatherpaths )
 					{
 						if (showid)
@@ -160,7 +174,7 @@ define("GeoMap",["zrender","zrender/tool/util"],
 				seft.width = seft.defaultCfg.width || seft.zr.getWidth();
 				seft.height = seft.defaultCfg.height || seft.zr.getHeight();
 				seft.load(seft.json);
-				seft.refreshWeather();
+				seft.refreshWeather(seft.weatherShowid);
 				seft.refresh ();
 			 }
 			return seft;
@@ -273,7 +287,7 @@ define("GeoMap",["zrender","zrender/tool/util"],
 			seft.pathArray = [];
 			seft.json2path = function (json,obj){
 				seft.pathArray = [];
-				geomap.log(seft.pathArray);
+				//geomap.log(seft.pathArray);
 				 var
 					shapes = json.features,
 					shapeType,
@@ -290,7 +304,7 @@ define("GeoMap",["zrender","zrender/tool/util"],
 
 					if((!obj.scale || !obj.offset) && !convertor_parse.srcSize){
 						convertor_parse.parseSrcSize(json);
-						geomap.log('都没有存在');
+						
 					}
 					 if(!obj.offset){
 						obj.offset = {
@@ -308,7 +322,7 @@ define("GeoMap",["zrender","zrender/tool/util"],
 					temx > temy ? temx = temy : temy = temx;
 					temx = temy * 0.73;
 					*/
-					geomap.log(temx +'aaa'+temy);
+					
 					if (temx > temy*073)
 					{
 						temx = temy*0.73;
@@ -316,12 +330,12 @@ define("GeoMap",["zrender","zrender/tool/util"],
 					}else
 					{
 						//temx = temy;
-						geomap.log(temx +'aaa'+temy*0.73);
+						
 						temx/0.73 > temy ? temx = temy*0.73 :temy = temx/0.73;
 						//temy = temx/0.73 ;
 						
 					}
-					geomap.log(temx +'aaa'+temy);
+					
 					obj.scale = {
 					  x: temx,
 					  y: temy
@@ -333,18 +347,18 @@ define("GeoMap",["zrender","zrender/tool/util"],
 					shape = shapes[i];
 					//geomap.log(shape.type);	
 					if(shape.type == 'Feature'){
-					  seft.pushApath(shape.geometry, shape);
+					  seft.pushApath(shape.geometry, shape,obj);
 					}else if(shape.type == 'GeometryCollection'){
 					  geometries = shape.geometries;
 					  for(j = 0, len2 = geometries.length; j < len2; j++){
 						val = geometries[j];
-						seft.pushApath(val, val);
+						seft.pushApath(val, val,obj);
 					  }
 					}
 				  }
 				  return seft.pathArray;
 			}
-			seft.pushApath = function (gm, shape){
+			seft.pushApath = function (gm, shape,obj){
 				shapeType = gm.type;
 				shapeCoordinates = gm.coordinates;
 				polygonList = seft[shapeType](shapeCoordinates);
@@ -352,9 +366,6 @@ define("GeoMap",["zrender","zrender/tool/util"],
 				   //geomap.log(polygonList);
 					var shapeObj={
 							shape : 'text',
-							//id:shape.id+'text',
-							
-							zlevel:3,
 							clickable : true,
 							hoverable:false,
 							style : {
@@ -382,7 +393,7 @@ define("GeoMap",["zrender","zrender/tool/util"],
 					for (polygoni in polygonList )
 					{
 						
-						geomap.log(shape.id);
+						
 						var shapeObj={
 							shape : 'polygon',
 							hoverable:false,
@@ -394,22 +405,25 @@ define("GeoMap",["zrender","zrender/tool/util"],
 						};
 						seft.pathArray.push(shapeObj);
 						//显示地图区域名称
-						/*cp= seft['makePoint'](shape.properties.cp);
-						seft.pathArray.push({
-							shape : 'text',
-							id:shape.id+'text',
-							zlevel:2,
-							clickable : true,
-							hoverable:false,
-							style : {
-								text:shape.properties.name,
-								x:cp[0],
-								y:cp[1],
-								color:"rgba(0,0,0,1)"
-							},
-							draggable : false
-						});
-						*/
+						//geomap.log(obj.config.showName);
+						if (obj.config.showName){
+							cp= seft['makePoint'](shape.properties.cp);
+							seft.pathArray.push({
+								shape : 'text',
+								id:shape.id+'text',
+								zlevel:2,
+								clickable : true,
+								hoverable:false,
+								style : {
+									brushType: 'fill',
+									text:shape.properties.name,
+									x:cp[0],
+									y:cp[1],
+									color:"#3D534E"
+								},
+								draggable : false
+							});
+						}
 					}
 				}
 			  }

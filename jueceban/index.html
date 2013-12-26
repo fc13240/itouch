@@ -11,121 +11,184 @@
 	<meta name="keywords" content="" />
 	<meta name="description" content="" />
 	<meta name="viewport" content="width=320,initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
-	<link type="text/css" rel="stylesheet" media="screen" href="./index.css" />
+	<link type="text/css" rel="stylesheet" media="screen" href="./css/index.css" />
 	<script src="./js/jquery-1.8.2.js"></script>
-	<script src="./js/index.js"></script>
-</head>
+	<script src="./js/highcharts.js"></script>
+	<script type="text/javascript" src="./js/esl.js?1"></script>
+	<script src="./js/index.js?7"></script>
+
 <body>
-	<div id="main-container">
-		<header class="full"></header>
-		<div class="nav-btn">
-			<div>
-				<span></span>
-				<span></span>
-				<span></span>
+	<div id="main">
+		<nav id="sort_nav">
+			<ul>
+				<li data-id="js_1" class="big">降水产品</li>
+				<li data-id="js_1" class="init">24小时降水实况</li>
+				<li data-id="js_2">降水预报</li>
+				<li data-id="wd_1" class="big">温度产品</li>
+				<li data-id="wd_1">05点24小时变温</li>
+				<li data-id="wd_2">最低气温预报</li>
+				<li data-id="f_1" class="big">风场预报</li>
+				<li data-id="f_1">700hPa风场预报</li>
+				<li data-id="sd_1" class="big">相对湿度实况</li>
+				<li data-id="sd_1">最大相对湿度</li>
+				<li data-id="sd_2">最小相对湿度</li>
+				<li data-id="wr_1" class="big">环境气象</li>
+				<li data-id="wr_1">空气污染扩散条件</li>
+				<li data-id="wr_2">PM2.5实况</li>
+				<li class="big" data-id="y_1">高度场叠加云图</li>
+			</ul>
+		</nav>
+		<div id="main_container">
+			<div class="fix_layer top_layer">
+				<div class="btn_nav">
+					<span></span>
+					<span></span>
+					<span></span>
+				</div>
+				<h1>05点24小时变温</h1>
 			</div>
-			<nav>
-				<div class="mask"></div>
-				<ul>
-					<li data-id="jiangshui">降水产品</li>
-					<li data-id="wendu">温度产品</li>
-					<li data-id="feng">风产品</li>
-					<li data-id="shidu">湿度产品</li>
-					<li data-id="wuran">污染产品</li>
-					<li data-id="yun">高度场叠加云图</li>
-				</ul>
-			</nav>
+			<!-- <div id="btn_back">返回</div> -->
+			<!-- <div id="operator" style="position:absolute;left:0;top:43px;width:600px;height:350px;background:blue"> -->
+			<div id="operator" style="position:absolute;left:-100px;top:-430pxpx;width:765px;height:645px;">
+				<!-- <div id="main_map" style="width:100%;height:100%;"></div> -->
+				<!-- <img id="testImg" src="./img/js_sk.jpg" style="width:100%;height:100%;"/> -->
+				<!-- <iframe src="http://10.14.85.53/weather/decision/Test/index.html" style="width:100%;height:100%"></iframe> -->
+				<!-- <div style="position:absolute;left:50%;top:50%;background:red;z-index:100;width:10px;height:10px;margin-left:-5px;margin-top:5px;"></div> -->
+			</div>
+			
+			<!-- <div class="fix_layer bottom_layer" style="bottom:100px;">
+				<div class="tuli_layer"><img src="./img/tuli/shidu.jpg"/></div>
+				<span class="btn_player"></span>
+				<div class="progress">
+					<div class="time"><i>2013-12-30 12:32:00</i><div></div></div>
+					<span class="on"></span>
+					<span class="on"></span>
+					<span></span>
+					<span></span>
+					<span></span>
+				</div>
+			</div> -->
 		</div>
-		
-		<ul class="sub-item">
-		</ul>
-		<section class="pic">
-			<img src="" />
-		</section>
-		<div class="btn_c">
-			<a class="btn_scale btn_in"></a>
-			<a class="btn_scale btn_out"></a>
-		</div>
-		<div id="chart_container"></div>
-		<p class="desc"></p>
 	</div>
 	<script type="text/javascript">
-	var data = {
-		jiangshui: [
-			{
-				name: '24小时降水实况',
-				ename: 'shikuang',
-				pic: './img/js_sk.jpg',
-				desc: '昨日05时至今日05时，24小时全国累计降水量实况示意图。'
-			},{
-				name: '24小时降水预报',
-				ename: 'jiangshuiyubao',
-				pic: './img/js_yb.jpg',
-				desc: '今日08时至明日08时，24小时全国降水量预报示意图。'
-			}
-		],
-		wendu: [
-			{
-				name: '05点24小时变温',
-				ename: 'bianwen',
-				pic: './img/wd_bw.jpg',
-				desc: '今日05时与昨日05时相比24小时全国气温变化实况示意图。'
-			},{
-				name: '最低气温预报',
-				ename: 'minwendu',
-				pic: './img/wd_min.jpg',
-				desc: '今日08时至明日08时，全国最低气温预报示意图。'
-			}
-		],
-		feng: [
-			{
-				name: '700hPa风场预报',
-				ename: 'fengyubao',
-				pic: './img/f_yb.jpg',
-				desc: '欧洲中心昨晚20时发布的东亚地区24小时700hPa风场预报图。'
-			}
-		],
-		shidu: [
-			{
-				name: '最大相对湿度',
-				ename: 'maxshidu',
-				pic: './img/sd_max.jpg',
-				desc: '昨日08时至今日08时，全国最大相对湿度实况示意图。'
-			},{
-				name: '最小相对湿度',
-				ename: 'minshidu',
-				pic: './img/sd_min.jpg',
-				desc: '昨日08时至今日08时，全国最小相对湿度实况示意图。'
-			}
-		],
-		wuran: [
-			{
-				name: '空气污染扩散条件',
-				ename: 'tiaojian',
-				pic: './img/wr_tj.jpg',
-				desc: '今日08时至明日08时，全国空气污染气象条件预报等级预报示意图。'
-			},{
-				name: 'PM2.5实况',
-				ename: 'pm2.5',
-				// pic: './img/1.jpg',
-				desc: '今日05时，全国PM2.5实况监测图。',
-				fn: 'pm2.5'
-			}
-		],
-		yun: [
-			{
-				name: '高度场叠加云图',
-				ename: 'yuntu',
-				pic: './img/y_1.jpg',
-				desc: '欧洲中心昨晚20时发布的东亚地区24小时500hPa高度场预报图与今早05日可见光云图叠加图。'
-			}
-		]
-	};
-	var initedData = {
-		type: 'jiangshui',
-		index: 0
-	};
+	var DATA_CONF = {
+		//24小时降水实况
+		js_1: {
+			'type': 'json',
+			'color': 'jiangshui',
+			'items': [
+				{'src':'./data/js_20.json','time': '2013年12月20日05时'},
+				{'src':'./data/js_21.json','time': '2013年12月20日06时'},
+				{'src':'./data/js_22.json','time': '2013年12月20日07时'},
+				{'src':'./data/js_23.json','time': '2013年12月20日08时'},
+				{'src':'./data/js_24.json','time': '2013年12月20日09时'}
+			]
+		},
+		//24小时降水预报
+		js_2: {
+			'type': 'img',
+			'tuli': './img/tuli/jiangshui.jpg',
+			'items': [
+				{'img':'./img/jsyb/24.jpg','time': '12日8时~13日8时'},
+				{'img':'./img/jsyb/48.jpg','time': '13日8时~14日8时'},
+				{'img':'./img/jsyb/72.jpg','time': '14日8时~15日8时'}
+			]
+		}
+		,
+		// 05点24小时变温
+		wd_1: {
+			'type': 'json',
+			'color': 'wendu',
+			'items': [
+				{'src':'./data/bw_20.json','time': '2013年12月20日05时'},
+				{'src':'./data/bw_21.json','time': '2013年12月20日06时'},
+				{'src':'./data/bw_22.json','time': '2013年12月20日07时'},
+				{'src':'./data/bw_23.json','time': '2013年12月20日08时'},
+				{'src':'./data/bw_24.json','time': '2013年12月20日09时'}
+			]
+		}
+		,
+		//最低气温预报
+		wd_2: {
+			'type': 'img',
+			'tuli': './img/tuli/wendu.jpg',
+			'color': 'wendu',
+			'items': [
+				{'img':'./img/zdqw/20.jpg','time': '12日8时~13日8时'},
+				{'img':'./img/zdqw/21.jpg','time': '13日8时~14日8时'},
+				{'img':'./img/zdqw/22.jpg','time': '14日8时~15日8时'},
+				{'img':'./img/zdqw/23.jpg','time': '15日8时~16日8时'},
+				{'img':'./img/zdqw/24.jpg','time': '16日8时~17日8时'}
+			]
+		}
+		,
+		// 700hPa风场预报
+		f_1: {
+			'type': 'img',
+			'items': [
+				{'img':'./img/feng/20.jpg','time': '2013年12月20日08时'},
+				{'img':'./img/feng/21.jpg','time': '2013年12月21日08时'},
+				{'img':'./img/feng/22.jpg','time': '2013年12月22日08时'},
+				{'img':'./img/feng/23.jpg','time': '2013年12月23日08时'},
+				{'img':'./img/feng/24.jpg','time': '2013年12月24日08时'}
+			]
+		}
+		,
+		//最大相对湿度
+		sd_1: {
+			'type': 'img',
+			'tuli': './img/tuli/shidu.jpg',
+			'items': [
+				{'img':'./img/zdxdsd/20.jpg','time': '2013年12月20日06时'},
+				{'img':'./img/zdxdsd/21.jpg','time': '2013年12月21日06时'},
+				{'img':'./img/zdxdsd/22.jpg','time': '2013年12月22日06时'},
+				{'img':'./img/zdxdsd/23.jpg','time': '2013年12月23日06时'},
+				{'img':'./img/zdxdsd/24.jpg','time': '2013年12月24日06时'}
+			]
+		}
+		,
+		// 最小相对湿度
+		sd_2: {
+			'type': 'img',
+			'tuli': './img/tuli/shidu.jpg',
+			'items': [
+				{'img':'./img/zxxdsd/20.jpg','time': '2013年12月20日06时'},
+				{'img':'./img/zxxdsd/21.jpg','time': '2013年12月21日06时'},
+				{'img':'./img/zxxdsd/22.jpg','time': '2013年12月22日06时'},
+				{'img':'./img/zxxdsd/23.jpg','time': '2013年12月23日06时'},
+				{'img':'./img/zxxdsd/24.jpg','time': '2013年12月24日06时'}
+			]
+		}
+		,
+		//空气污染扩散条件
+		wr_1: {
+			'type': 'img',
+			'tuli': './img/tuli/wuran.jpg',
+			'items': [
+				{'img':'./img/kqwr/20.jpg','time': '20日8时~21日8时'},
+				{'img':'./img/kqwr/21.jpg','time': '21日8时~22日8时'},
+				{'img':'./img/kqwr/22.jpg','time': '22日8时~23日8时'},
+				{'img':'./img/kqwr/23.jpg','time': '23日8时~24日8时'},
+				{'img':'./img/kqwr/24.jpg','time': '24日8时~25日8时'}
+			]
+		}
+		,
+		// PM2.5实况
+		wr_2: {
+			'type': 'hightchart',
+			'fnname': 'pm2.5'
+		}
+		,
+		//高度场叠加云图
+		y_1: {
+			'type': 'img',
+			'items': [
+				{'img':'./img/yun/22.jpg','time': '2013年12月22日08时'},
+				{'img':'./img/yun/23.jpg','time': '2013年12月23日08时'},
+				{'img':'./img/yun/24.jpg','time': '2013年12月24日08时'}
+			]
+		}
+	}
 	</script>
-	<script src="./js/highcharts.js"></script>
 </body>
 </html>
