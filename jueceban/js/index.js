@@ -106,7 +106,7 @@
 					if(tuli){
 						$html += '<div class="tuli_layer"><img src="'+tuli+'"/></div>';
 					}
-						$html +='<span class="btn_player"></span>'+
+						$html +='<span class="btn_player"><div class="notice" id="n_play"><i>点击这里播放</i><div><div></div></div></div></span>'+
 								'<div class="progress">';
 						for(var i = 0;i<_totalNum;i++){
 							$html += '<span data-index='+i+' style="width:'+width+'px"></span>'
@@ -117,6 +117,7 @@
 		self.playerTT;
 		$html.find('.btn_player').click(function(){
 			var $this = $(this);
+			$('#n_play').hide();
 			if($this.hasClass('pause')){
 				self.stop();
 				$this.removeClass('pause');
@@ -301,6 +302,7 @@ $(function() {
 		$main_container.addClass('on').removeClass('off');
 	}
 	$('.btn_nav').click(function() {
+		$('#n_menu').fadeOut();
 		if ($main_container.hasClass('on')) {
 			hide_nav();
 		} else {
@@ -385,6 +387,7 @@ $(function() {
 		scale_total = 1;
 	}
 	$operator.on('Scale', function(e, d) {
+		isChanging = true;
 		var scale = d.scale * data.scale;
 		// result.html(scale+'<br/>'+result.html());
 		var toWidth = scale * data.width;
@@ -395,6 +398,7 @@ $(function() {
 			transform: 'scale(' + scale + ',' + scale + ')'
 		})
 	}).on('ScaleEnd', function(e, d) {
+		isChanging = false;
 		var scale = d.scale * data.scale;
 		var toWidth = scale * data.width;
 		scale_total *= scale;
@@ -407,7 +411,9 @@ $(function() {
 			data.scale = scale;
 		}
 	});
+	var isChanging = false;
 	$main_container.on('Move', function(e, d) {
+		isChanging = true;
 		var xStep = d.xStep,
 			yStep = d.yStep;
 		var scale = data.scale;
@@ -446,6 +452,7 @@ $(function() {
 			'top': newTop
 		});
 	}).on('MoveEnd', function(e, d) {
+		isChanging = false;
 		/*这里更新transform-origin时会改变位置!!!!!!*/
 		var scale = data.scale;
 		var width = data.width;
@@ -564,6 +571,7 @@ $(function() {
 			}
 			/*清除map相关数据*/
 			var clearMap = function(){
+				$operator.html('');
 				$('#btn_back').remove();
 				if(isInitMap && gm){
 					gm.zr.clear();
@@ -604,6 +612,9 @@ $(function() {
 								gm.load(mapData);
 					 			gm.render();
 					 			gm.zr.on("click",function(e){
+					 				if(global_jsonid || isChanging){//防止多次点击
+					 					return;
+					 				}
 								 	var target = e.target;
 								 	if(target){
 								 		var jsonid = target.id.replace('text','');
@@ -611,11 +622,14 @@ $(function() {
 									 		global_jsonid = jsonid;
 								 			getJson('./data/map/'+jsonid+'.geo.json',function(json){
 								 				resetToOldOffset(function(){
+								 					var $n_back = $('#n_back').show();
 								 					gm.clear();
 													gm.load(json,{showName:true});
 													gm.refreshWeather(jsonid);
 													var back = function(){
+														$n_back.remove();//删除提示
 														resetToOldOffset(function(){
+															global_jsonid = null;
 									 						gm.clear();
 															gm.load(mapData,{showName:false});
 															gm.refreshWeather();
