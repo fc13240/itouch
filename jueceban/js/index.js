@@ -96,6 +96,7 @@
 		progressWidth = $main_container.width() - 50;
 	})
 	var delay = 1000;
+	var isShowedNotice = false;//是否已经显示过提示
 	var Player = function(_totalNum,callback,tuli){
 		var self = this;
 		self.cIndex = -1;
@@ -106,8 +107,13 @@
 					if(tuli){
 						$html += '<div class="tuli_layer"><img src="'+tuli+'"/></div>';
 					}
-						$html +='<span class="btn_player"><div class="notice" id="n_play"><i>点击这里播放</i><div><div></div></div></div></span>'+
-								'<div class="progress">';
+					$html +='<span class="btn_player">';
+					if(!isShowedNotice){
+						isShowedNotice = true;
+						$html += '<div class="notice" id="n_play"><i>点击这里播放</i><div><div></div></div></div>';
+					}
+					$html += '</span>';
+						$html +='<div class="progress">';
 						for(var i = 0;i<_totalNum;i++){
 							$html += '<span data-index='+i+' style="width:'+width+'px"></span>'
 						}
@@ -115,7 +121,7 @@
 							'</div>';
 		$html = $($html).appendTo($main_container);
 		self.playerTT;
-		$html.find('.btn_player').click(function(){
+		var $btn_play = $html.find('.btn_player').click(function(){
 			var $this = $(this);
 			$('#n_play').hide();
 			if($this.hasClass('pause')){
@@ -128,13 +134,13 @@
 		});	
 		self.progressBtns = $html.find('.progress span').click(function(){
 			self.stop();
-			self.play($(this).data('index'));
+			self.play($(this).data('index'),true);
 		});			
 		self.playerHTML = $html;
 		self.callback = callback || function(toIndex,fn){fn()};
 	}
 	var prop = Player.prototype;
-	prop.play = function(index){
+	prop.play = function(index,isFromProgress){
 		var self = this;
 		var callback = self.callback;
 		var cIndex = self.cIndex;
@@ -149,9 +155,11 @@
 			$span.filter(':lt('+toIndex+'),:eq('+toIndex+')').addClass('on');
 			self.cIndex = toIndex;
 			callback(toIndex,function(){
-				self.playerTT = setTimeout(function(){;
-					self.play();
-				},delay);
+				if(!isFromProgress){//当点击进度条上的按钮时不继续播放
+					self.playerTT = setTimeout(function(){;
+						self.play();
+					},delay);
+				}
 			});			
 		}
 	}	
