@@ -572,6 +572,7 @@ $(function() {
 			/*清除map相关数据*/
 			var clearMap = function(){
 				$operator.html('');
+				$('#n_back').remove();
 				$('#btn_back').remove();
 				if(isInitMap && gm){
 					gm.zr.clear();
