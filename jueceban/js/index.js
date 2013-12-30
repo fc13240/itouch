@@ -1,5 +1,93 @@
 /*手势事件*/
-(function(global) {
+// (function(global) {
+// 	var eventConfig = {
+// 		// 'MoveStart': null,
+// 		'Move': null,
+// 		'MoveEnd': null,
+// 		'SwipeLeft': null,
+// 		'SwipeRight': null,
+// 		'Scale': null,
+// 		'ScaleEnd': null
+// 	}
+// 	var pow = function(num) {
+// 		return Math.pow.call(Math, num, 2);
+// 	}
+// 	//得到两个手指点的直线长度
+// 	var lineLength = function(touches) {
+// 		var a = touches[0],
+// 			b = touches[1];
+// 		return Math.sqrt(pow(a.pageX - b.pageX) + pow(a.pageY - b.pageY));
+// 	}
+// 	var TouchEvent = function($obj) {
+// 		$obj.on('touchstart', function(eStart) {
+// 			// eStart.preventDefault();
+// 			//防止事件重复绑定
+// 			$obj.off('touchend');
+// 			$obj.off('touchmove');
+// 			var touches = eStart.originalEvent.touches;
+// 			var len = touches.length;
+// 			if (len == 2) {
+// 				var startLineLen = lineLength(touches);
+// 			} else if (len == 1) {
+// 				var startTouchEvent = touches[0];
+// 				var startX = startTouchEvent.pageX,
+// 					startY = startTouchEvent.pageY;
+// 			}
+// 			var moveX, moveY;
+// 			var scalecache;
+// 			$obj.on('touchmove', function(eMove) {
+// 				// eMove.preventDefault();
+// 				var moveTouchEvent = eMove.originalEvent.touches;
+// 				if (len == 2) {
+// 					var moveLineLen = lineLength(moveTouchEvent);
+// 					var scale = moveLineLen / startLineLen;
+// 					scalecache = scale;
+// 					// result.html(scale+'scale<br/>' + result.html());
+// 					// return;
+// 					$obj.trigger('Scale', {
+// 						scale: scale
+// 					});
+// 				} else if (len == 1) {
+// 					var eMove = moveTouchEvent[0];
+// 					moveX = eMove.pageX;
+// 					moveY = eMove.pageY;
+// 					// result.html('Move'+(moveX - startX)+'<br/>'+result.html());
+// 					$obj.trigger('Move', {
+// 						xStep: moveX - startX,
+// 						yStep: moveY - startY
+// 					});
+// 				}
+// 			});
+// 			$obj.on('touchend', function() {
+// 				if (scalecache) {
+// 					$obj.trigger('ScaleEnd', {
+// 						scale: scalecache
+// 					});
+// 					scalecache = null;
+// 				}
+// 				if(Math.abs(moveY - startY) < 50){
+// 					var eventType = moveX - startX < 0 ? 'SwipeLeft' : 'SwipeRight';
+// 					$obj.trigger(eventType);
+// 				}
+				
+// 				if (!isNaN(moveX) && !isNaN(startX)) {
+// 					// result.html((moveX - startX)+'<br/>'+result.html());
+// 					$obj.trigger('MoveEnd', {
+// 						xStep: moveX - startX,
+// 						yStep: moveY - startY
+// 					});
+// 					moveX = moveY = null;
+// 				}
+
+// 				$obj.off('touchend');
+// 				$obj.off('touchmove');
+// 			});
+// 			// result.html(len+'<br/>'+result.html());
+// 		});
+// 	}
+// 	global.TouchEvent = TouchEvent;
+// })(this);
+(function(global){
 	var eventConfig = {
 		// 'MoveStart': null,
 		'Move': null,
@@ -19,70 +107,32 @@
 		return Math.sqrt(pow(a.pageX - b.pageX) + pow(a.pageY - b.pageY));
 	}
 	var TouchEvent = function($obj) {
-		$obj.on('touchstart', function(eStart) {
-			// eStart.preventDefault();
-			//防止事件重复绑定
-			$obj.off('touchend');
-			$obj.off('touchmove');
+		var startLineLen = 0;
+		var scaleCache = 1;
+		$obj.on('touchstart.scale', function(eStart) {
 			var touches = eStart.originalEvent.touches;
 			var len = touches.length;
 			if (len == 2) {
-				var startLineLen = lineLength(touches);
-			} else if (len == 1) {
-				var startTouchEvent = touches[0];
-				var startX = startTouchEvent.pageX,
-					startY = startTouchEvent.pageY;
+				eStart.preventDefault();
+				startLineLen = lineLength(touches);
 			}
-			var moveX, moveY;
-			var scalecache;
-			$obj.on('touchmove', function(eMove) {
-				// eMove.preventDefault();
-				var moveTouchEvent = eMove.originalEvent.touches;
-				if (len == 2) {
-					var moveLineLen = lineLength(moveTouchEvent);
-					var scale = moveLineLen / startLineLen;
-					scalecache = scale;
-					// result.html(scale+'scale<br/>' + result.html());
-					// return;
-					$obj.trigger('Scale', {
-						scale: scale
-					});
-				} else if (len == 1) {
-					var eMove = moveTouchEvent[0];
-					moveX = eMove.pageX;
-					moveY = eMove.pageY;
-					// result.html('Move'+(moveX - startX)+'<br/>'+result.html());
-					$obj.trigger('Move', {
-						xStep: moveX - startX,
-						yStep: moveY - startY
-					});
-				}
+		}).on('touchmove.scale', function(eMove) {
+			var moveTouchEvent = eMove.originalEvent.touches;
+			var len = moveTouchEvent.length;
+			if (len == 2) {
+				eMove.preventDefault();
+				var moveLineLen = lineLength(moveTouchEvent);
+				var scale = moveLineLen / startLineLen;
+				scalecache = scale;
+				$obj.trigger('Scale', {
+					scale: scale
+				});
+			}
+		}).on('touchend.scale', function() {
+			$obj.trigger('ScaleEnd', {
+				scale: scalecache
 			});
-			$obj.on('touchend', function() {
-				if (scalecache) {
-					$obj.trigger('ScaleEnd', {
-						scale: scalecache
-					});
-					scalecache = null;
-				}
-				if(Math.abs(moveY - startY) < 50){
-					var eventType = moveX - startX < 0 ? 'SwipeLeft' : 'SwipeRight';
-					$obj.trigger(eventType);
-				}
-				
-				if (!isNaN(moveX) && !isNaN(startX)) {
-					// result.html((moveX - startX)+'<br/>'+result.html());
-					$obj.trigger('MoveEnd', {
-						xStep: moveX - startX,
-						yStep: moveY - startY
-					});
-					moveX = moveY = null;
-				}
-
-				$obj.off('touchend');
-				$obj.off('touchmove');
-			});
-			// result.html(len+'<br/>'+result.html());
+			scalecache = 1;
 		});
 	}
 	global.TouchEvent = TouchEvent;
@@ -287,17 +337,43 @@
 		}
 	}
 })(this);
+(function(win) {
+    var lastTime = 0;
+    var vendors = ['webkit', 'moz'];
+    for(var x = 0; x < vendors.length && !win.requestAnimationFrame; ++x) {
+        win.requestAnimationFrame = win[vendors[x] + 'RequestAnimationFrame'];
+        win.cancelAnimationFrame = win[vendors[x] + 'CancelAnimationFrame'] ||    // name has changed in Webkit
+                                      win[vendors[x] + 'CancelRequestAnimationFrame'];
+    }
 
+    if (!win.requestAnimationFrame) {
+        win.requestAnimationFrame = function(callback, element) {
+            var currTime = new Date().getTime();
+            var timeToCall = Math.max(0, 16.7 - (currTime - lastTime));
+            var id = win.setTimeout(function() {
+                callback(currTime + timeToCall);
+            }, timeToCall);
+            lastTime = currTime + timeToCall;
+            return id;
+        };
+    }
+    if (!win.cancelAnimationFrame) {
+        win.cancelAnimationFrame = function(id) {
+            clearTimeout(id);
+        };
+    }
+}(window));
 
-// $(function(){
-// 	result = $('<div style="position:fixed;z-index:101;left:10px;top:100px;width:300px;height:100px;background:rgba(100,100,100,0.3);"></div>').appendTo($('body'));
-// });
+$(function(){
+	result = $('<div style="position:fixed;z-index:101;left:10px;top:100px;width:300px;height:100px;background:rgba(100,100,100,0.3);"></div>').appendTo($('body'));
+});
 $(function() {
 	var win = $(window);
 	var w = win.width();
 	var h = win.height();
 	$('#main').width(w).height(h);
 	$('#sort_nav ul,#main_container').height(h);
+	$('#operator_container').width(w).height(h);
 	var $main_container = $('#main_container');
 
 	var widthMain = $main_container.width();
@@ -333,14 +409,17 @@ $(function() {
 	var MAX_WIDTH = MAX_SCALE*data.width;
 	var MIN_WIDTH = w;
 	var $middleDot = $operator.find('div');
-	// $operator.css({
-	// 	'transform-origin': '100px 30px',
-	// 	// transform: 'scale(1.2,1.2)',
-	// 	transform: 'scale(2,2)',
-	// });
+	// setTimeout(function(){
+	// 	$operator.css({
+	// 		// 'transform-origin': '100px 30px',
+	// 		// transform: 'scale(1.2,1.2)',
+	// 		transform: 'scale(2,2)'
+	// 	});
+	// },100);
+	
 	var oldData = $.extend({},data);
 	// 重置到原始尺寸和位置及缩放
-	function resetToOldOffset(callback){//alert(oldData.scale+' '+oldData.width+' '+oldData.height+' '+oldData.left+' '+oldData.top);
+	function resetToOldOffset(callback){
 		var scale = oldData.scale;
 		$operator.css({
 			transform: 'scale('+scale+','+scale+')',
@@ -393,137 +472,144 @@ $(function() {
 		}
 		gm && gm.resize();
 		scale_total = 1;
-	}
+	};
+	
 	$operator.on('Scale', function(e, d) {
 		isChanging = true;
 		var scale = d.scale * data.scale;
-		// result.html(scale+'<br/>'+result.html());
+		
 		var toWidth = scale * data.width;
 		if (toWidth > MAX_WIDTH || toWidth < MIN_WIDTH) {
 			return;
 		}
-		$operator.css({
-			transform: 'scale(' + scale + ',' + scale + ')'
-		})
-	}).on('ScaleEnd', function(e, d) {
-		isChanging = false;
-		var scale = d.scale * data.scale;
-		var toWidth = scale * data.width;
-		scale_total *= scale;
-		if (toWidth > MAX_WIDTH || toWidth < MIN_WIDTH) {
-			scale = (toWidth > MAX_WIDTH?MAX_WIDTH:MIN_WIDTH)/data.width;
-			resetScale(scale);
-		}else if(scale_total > RESET_SCALE || scale_total < 1/RESET_SCALE){//放大或缩小一定倍数都进行重绘
-			resetScale(scale_total);
-		}else{
-			data.scale = scale;
+		// result.html(scale+'--<br/>'+result.html());
+		var ScaleFn = function(){
+			// result.html(scale+'<br/>'+result.html());
+			$operator.css({
+				transform: 'scale(' + scale + ',' + scale + ')'
+			})
 		}
-	});
+		requestAnimationFrame(ScaleFn);
+	})
+	// .on('ScaleEnd', function(e, d) {
+	// 	isChanging = false;
+	// 	var scale = d.scale * data.scale;
+	// 	var toWidth = scale * data.width;
+	// 	scale_total *= scale;
+	// 	if (toWidth > MAX_WIDTH || toWidth < MIN_WIDTH) {
+	// 		scale = (toWidth > MAX_WIDTH?MAX_WIDTH:MIN_WIDTH)/data.width;
+	// 		resetScale(scale);
+	// 	}else if(scale_total > RESET_SCALE || scale_total < 1/RESET_SCALE){//放大或缩小一定倍数都进行重绘
+	// 		resetScale(scale_total);
+	// 	}else{
+	// 		data.scale = scale;
+	// 	}
+	// });
 	var isChanging = false;
-	$main_container.on('Move', function(e, d) {
-		isChanging = true;
-		var xStep = d.xStep,
-			yStep = d.yStep;
-		var scale = data.scale;
-		var newLeft = data.left + xStep;
-		var newTop = data.top + yStep;
-		var width = data.width;
-		var height = data.height;
-		var mWidth = width * (scale - 1) / 2;//以中心点缩放
-		var mHeight = height * (scale - 1) /2;
+	// $main_container.on('Move', function(e, d) {result.html('Move<br/>'+result.html());
+	// 	isChanging = true;
+	// 	var xStep = d.xStep,
+	// 		yStep = d.yStep;
+	// 	var scale = data.scale;
+	// 	var newLeft = data.left + xStep;
+	// 	var newTop = data.top + yStep;
+	// 	var width = data.width;
+	// 	var height = data.height;
+	// 	var mWidth = width * (scale - 1) / 2;//以中心点缩放
+	// 	var mHeight = height * (scale - 1) /2;
 
-		// 拖拽时加边界限制
-		if(newLeft - mWidth > 0){
-			newLeft = mWidth;
-		}else if(newLeft + mWidth + width < widthMain){
-			newLeft = widthMain - mWidth - width;
-		}
+	// 	// 拖拽时加边界限制
+	// 	if(newLeft - mWidth > 0){
+	// 		newLeft = mWidth;
+	// 	}else if(newLeft + mWidth + width < widthMain){
+	// 		newLeft = widthMain - mWidth - width;
+	// 	}
 
-		if(height + mHeight < heightMain){//高度不够时，强制不让拖动
-			newTop = data.top;
-			// result.html(newTop - mHeight+'<br/>'+result.html());
-			// if(newTop - mHeight < 0){
-			// 	newTop = 0;
-			// }else if(newTop + mHeight + height > heightMain){
-			// 	newTop = heightMain - mHeight - height;
-			// }
-		}else{
-			if(newTop - mHeight > 0){
-				newTop = mHeight;
-			}else if(newTop + mHeight + height < heightMain){
-				newTop = heightMain - mHeight - height;
-			}
-		}
+	// 	if(height + mHeight < heightMain){//高度不够时，强制不让拖动
+	// 		newTop = data.top;
+	// 		// result.html(newTop - mHeight+'<br/>'+result.html());
+	// 		// if(newTop - mHeight < 0){
+	// 		// 	newTop = 0;
+	// 		// }else if(newTop + mHeight + height > heightMain){
+	// 		// 	newTop = heightMain - mHeight - height;
+	// 		// }
+	// 	}else{
+	// 		if(newTop - mHeight > 0){
+	// 			newTop = mHeight;
+	// 		}else if(newTop + mHeight + height < heightMain){
+	// 			newTop = heightMain - mHeight - height;
+	// 		}
+	// 	}
 
-		$operator.css({
-			'left': newLeft,
-			'top': newTop
-		});
-	}).on('MoveEnd', function(e, d) {
-		isChanging = false;
-		/*这里更新transform-origin时会改变位置!!!!!!*/
-		var scale = data.scale;
-		var width = data.width;
-		var height = data.height;
-		var mWidth = width * (scale - 1) / 2;//以中心点缩放
-		var mHeight = height * (scale - 1) /2;
-		var num = $operator.css('transform-origin').split(' ');
-		var old_origin_x = parseFloat(num[0]);
-		var old_origin_y = parseFloat(num[1]);
-		var origin_x = old_origin_x - d.xStep/scale;
-		var origin_y = old_origin_y - d.yStep/scale;
+	// 	$operator.css({
+	// 		'left': newLeft,
+	// 		'top': newTop
+	// 	});
+	// }).on('MoveEnd', function(e, d) {result.html('end<br/>'+result.html());
+	// 	isChanging = false;
+	// 	/*这里更新transform-origin时会改变位置!!!!!!*/
+	// 	var scale = data.scale;
+	// 	var width = data.width;
+	// 	var height = data.height;
+	// 	var mWidth = width * (scale - 1) / 2;//以中心点缩放
+	// 	var mHeight = height * (scale - 1) /2;
+	// 	var num = $operator.css('transform-origin').split(' ');
+	// 	var old_origin_x = parseFloat(num[0]);
+	// 	var old_origin_y = parseFloat(num[1]);
+	// 	var origin_x = old_origin_x - d.xStep/scale;
+	// 	var origin_y = old_origin_y - d.yStep/scale;
 
-		var transform_origin = origin_x +'px '+(origin_y)+'px';
-		// width/data.width * origin_x - width/data.width * old_origin_x
-		// (scale - 1) * (origin_x - old_origin_x)
-		var offset = $operator.position();
-		var newLeft = data.left + d.xStep;// - d.xStep * (scale -1);
-		var newTop = data.top + d.yStep;// - d.yStep * (scale -1);
-		if(newLeft - mWidth > 0){
-			newLeft = mWidth;
-		}else if(newLeft + mWidth + width < widthMain){
-			newLeft = widthMain - mWidth - width;
-		}
-		if(height + mHeight < heightMain){
-			// result.html(newTop - mHeight+'end<br/>'+result.html());
-			if(newTop - mHeight < 0){
-				newTop = 0;
-			}else if(newTop + mHeight + height > heightMain){
-				newTop = heightMain - mHeight - height;
-			}
-		}else{
-			if(newTop - mHeight > 0){
-				newTop = mHeight;
-			}else if(newTop + mHeight + height < heightMain){
-				newTop = heightMain - mHeight - height;
-			}
-		}
-		// var newLeft = data.left + d.xStep * (scale );
-		// var newTop = data.top + d.yStep * (scale );
-		// $operator.css({
-		// 	'left': newLeft,
-		// 	'top': newTop,
-		// 	'transform-origin': transform_origin
-		// });
-		data.left = newLeft;
-		data.top = newTop;
-		// $middleDot.css({
-		// 	'transform-origin': transform_origin,
-		// 	left: origin_x
-		// 	,
-		// 	top: origin_y
-		// })
+	// 	var transform_origin = origin_x +'px '+(origin_y)+'px';
+	// 	// width/data.width * origin_x - width/data.width * old_origin_x
+	// 	// (scale - 1) * (origin_x - old_origin_x)
+	// 	var offset = $operator.position();
+	// 	var newLeft = data.left + d.xStep;// - d.xStep * (scale -1);
+	// 	var newTop = data.top + d.yStep;// - d.yStep * (scale -1);
+	// 	if(newLeft - mWidth > 0){
+	// 		newLeft = mWidth;
+	// 	}else if(newLeft + mWidth + width < widthMain){
+	// 		newLeft = widthMain - mWidth - width;
+	// 	}
+	// 	if(height + mHeight < heightMain){
+	// 		// result.html(newTop - mHeight+'end<br/>'+result.html());
+	// 		if(newTop - mHeight < 0){
+	// 			newTop = 0;
+	// 		}else if(newTop + mHeight + height > heightMain){
+	// 			newTop = heightMain - mHeight - height;
+	// 		}
+	// 	}else{
+	// 		if(newTop - mHeight > 0){
+	// 			newTop = mHeight;
+	// 		}else if(newTop + mHeight + height < heightMain){
+	// 			newTop = heightMain - mHeight - height;
+	// 		}
+	// 	}
+	// 	// var newLeft = data.left + d.xStep * (scale );
+	// 	// var newTop = data.top + d.yStep * (scale );
+	// 	// $operator.css({
+	// 	// 	'left': newLeft,
+	// 	// 	'top': newTop,
+	// 	// 	'transform-origin': transform_origin
+	// 	// });
+	// 	data.left = newLeft;
+	// 	data.top = newTop;
+	// 	// $middleDot.css({
+	// 	// 	'transform-origin': transform_origin,
+	// 	// 	left: origin_x
+	// 	// 	,
+	// 	// 	top: origin_y
+	// 	// })
 
-		// var num = $operator.css('transform-origin').split(' ');
-		// var origin_x = parseFloat(num[0]) - d.xStep/scale;
-		// var origin_y = parseFloat(num[1]) - d.yStep/scale;
-		// result.html(transform_origin+'<br/>'+result.html());
-		// setTimeout(function(){
-		// 	$operator.css({
-		// 		'transform-origin': transform_origin
-		// 	});	
-		// },500)
-	});	
+	// 	// var num = $operator.css('transform-origin').split(' ');
+	// 	// var origin_x = parseFloat(num[0]) - d.xStep/scale;
+	// 	// var origin_y = parseFloat(num[1]) - d.yStep/scale;
+	// 	// result.html(transform_origin+'<br/>'+result.html());
+	// 	// setTimeout(function(){
+	// 	// 	$operator.css({
+	// 	// 		'transform-origin': transform_origin
+	// 	// 	});	
+	// 	// },500)
+	// });	
 	TouchEvent($operator);
 
 	require.config({
