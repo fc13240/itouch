@@ -44,9 +44,7 @@ define("GeoMap",["zrender","zrender/tool/util"],
 					mapStyle:{						
 						hoverable:false,
 						clickable:true,
-						onclick:function(e){
-							alert(e.target.id);
-						},
+						onclick:function(){},
 						style:{
 							strokeColor:"#3D534E",
 							color : '#D6E6DA',

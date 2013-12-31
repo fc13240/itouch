@@ -1,93 +1,5 @@
 /*手势事件*/
-// (function(global) {
-// 	var eventConfig = {
-// 		// 'MoveStart': null,
-// 		'Move': null,
-// 		'MoveEnd': null,
-// 		'SwipeLeft': null,
-// 		'SwipeRight': null,
-// 		'Scale': null,
-// 		'ScaleEnd': null
-// 	}
-// 	var pow = function(num) {
-// 		return Math.pow.call(Math, num, 2);
-// 	}
-// 	//得到两个手指点的直线长度
-// 	var lineLength = function(touches) {
-// 		var a = touches[0],
-// 			b = touches[1];
-// 		return Math.sqrt(pow(a.pageX - b.pageX) + pow(a.pageY - b.pageY));
-// 	}
-// 	var TouchEvent = function($obj) {
-// 		$obj.on('touchstart', function(eStart) {
-// 			// eStart.preventDefault();
-// 			//防止事件重复绑定
-// 			$obj.off('touchend');
-// 			$obj.off('touchmove');
-// 			var touches = eStart.originalEvent.touches;
-// 			var len = touches.length;
-// 			if (len == 2) {
-// 				var startLineLen = lineLength(touches);
-// 			} else if (len == 1) {
-// 				var startTouchEvent = touches[0];
-// 				var startX = startTouchEvent.pageX,
-// 					startY = startTouchEvent.pageY;
-// 			}
-// 			var moveX, moveY;
-// 			var scalecache;
-// 			$obj.on('touchmove', function(eMove) {
-// 				// eMove.preventDefault();
-// 				var moveTouchEvent = eMove.originalEvent.touches;
-// 				if (len == 2) {
-// 					var moveLineLen = lineLength(moveTouchEvent);
-// 					var scale = moveLineLen / startLineLen;
-// 					scalecache = scale;
-// 					// result.html(scale+'scale<br/>' + result.html());
-// 					// return;
-// 					$obj.trigger('Scale', {
-// 						scale: scale
-// 					});
-// 				} else if (len == 1) {
-// 					var eMove = moveTouchEvent[0];
-// 					moveX = eMove.pageX;
-// 					moveY = eMove.pageY;
-// 					// result.html('Move'+(moveX - startX)+'<br/>'+result.html());
-// 					$obj.trigger('Move', {
-// 						xStep: moveX - startX,
-// 						yStep: moveY - startY
-// 					});
-// 				}
-// 			});
-// 			$obj.on('touchend', function() {
-// 				if (scalecache) {
-// 					$obj.trigger('ScaleEnd', {
-// 						scale: scalecache
-// 					});
-// 					scalecache = null;
-// 				}
-// 				if(Math.abs(moveY - startY) < 50){
-// 					var eventType = moveX - startX < 0 ? 'SwipeLeft' : 'SwipeRight';
-// 					$obj.trigger(eventType);
-// 				}
-				
-// 				if (!isNaN(moveX) && !isNaN(startX)) {
-// 					// result.html((moveX - startX)+'<br/>'+result.html());
-// 					$obj.trigger('MoveEnd', {
-// 						xStep: moveX - startX,
-// 						yStep: moveY - startY
-// 					});
-// 					moveX = moveY = null;
-// 				}
-
-// 				$obj.off('touchend');
-// 				$obj.off('touchmove');
-// 			});
-// 			// result.html(len+'<br/>'+result.html());
-// 		});
-// 	}
-// 	global.TouchEvent = TouchEvent;
-// })(this);
-(function(global){
+(function(global) {
 	var eventConfig = {
 		// 'MoveStart': null,
 		'Move': null,
@@ -106,66 +18,77 @@
 			b = touches[1];
 		return Math.sqrt(pow(a.pageX - b.pageX) + pow(a.pageY - b.pageY));
 	}
-	var TouchEvent = function($obj) {return;
-		$obj.off('touchstart');
-		$obj.off('touchmove');
-		$obj.off('touchend');
-
-		// var startX_swip,startY_swip,moveX_swip,moveY_swip;
-		// $obj.on('touchstart',function(e){
-		// 	// e.preventDefault();
-		// 	var touches = e.originalEvent.touches;
-		// 	var len = touches.length;
-		// 	if(len == 1){e.stopPropagation();
-		// 		var te = touches[0];
-		// 		startX_swip = te.pageX;
-		// 		startY_swip = te.pageY;
-		// 	}
-		// }).on('touchmove',function(e){
-		// 	// e.preventDefault();
-		// 	var touches = e.originalEvent.touches;
-		// 	var len = touches.length;
-		// 	if(len == 1){e.stopPropagation();
-		// 		var te = touches[0];
-		// 		moveX_swip = te.pageX;
-		// 		moveY_swip = te.pageY;
-		// 	}
-		// }).on('touchend',function(e){
-		// 	if(Math.abs(moveY_swip - startY_swip) < 50){
-		// 		var eventType = moveX_swip - startX_swip < 0 ? 'SwipeLeft' : 'SwipeRight';
-		// 		$obj.trigger(eventType);
-		// 	}
-		// });
-		var startLineLen = 0;
-		var scaleCache = 1;
-		$obj.on('touchstart.scale', function(eStart) {
+	var TouchEvent = function($obj) {
+		$obj.on('touchstart', function(eStart) {
+			// eStart.preventDefault();
+			//防止事件重复绑定
+			$obj.off('touchend');
+			$obj.off('touchmove');
 			var touches = eStart.originalEvent.touches;
 			var len = touches.length;
 			if (len == 2) {
-				eStart.preventDefault();
-				startLineLen = lineLength(touches);
+				var startLineLen = lineLength(touches);
+			} else if (len == 1) {
+				var startTouchEvent = touches[0];
+				var startX = startTouchEvent.pageX,
+					startY = startTouchEvent.pageY;
 			}
-		}).on('touchmove.scale', function(eMove) {
-			var moveTouchEvent = eMove.originalEvent.touches;
-			var len = moveTouchEvent.length;
-			if (len == 2) {
-				eMove.preventDefault();
-				var moveLineLen = lineLength(moveTouchEvent);
-				var scale = moveLineLen / startLineLen;
-				scaleCache = scale;
-				$obj.trigger('Scale', {
-					scale: scale
-				});
-			}
-		}).on('touchend.scale', function() {
-			$obj.trigger('ScaleEnd', {
-				scale: scaleCache
+			var moveX, moveY;
+			var scalecache;
+			$obj.on('touchmove', function(eMove) {
+				// eMove.preventDefault();
+				var moveTouchEvent = eMove.originalEvent.touches;
+				if (len == 2) {
+					eMove.preventDefault();
+					var moveLineLen = lineLength(moveTouchEvent);
+					var scale = moveLineLen / startLineLen;
+					scalecache = scale;
+					// result.html(scale+'scale<br/>' + result.html());
+					// return;
+					$obj.trigger('Scale', {
+						scale: scale
+					});
+				} else if (len == 1) {
+					var eMove = moveTouchEvent[0];
+					moveX = eMove.pageX;
+					moveY = eMove.pageY;
+					// result.html('Move'+(moveX - startX)+'<br/>'+result.html());
+					$obj.trigger('Move', {
+						xStep: moveX - startX,
+						yStep: moveY - startY
+					});
+				}
 			});
-			scaleCache = 1;
+			$obj.on('touchend', function() {
+				if (scalecache) {
+					$obj.trigger('ScaleEnd', {
+						scale: scalecache
+					});
+					scalecache = null;
+				}
+				if(Math.abs(moveY - startY) < 50){
+					var eventType = moveX - startX < 0 ? 'SwipeLeft' : 'SwipeRight';
+					$obj.trigger(eventType);
+				}
+				
+				if (!isNaN(moveX) && !isNaN(startX)) {
+					// result.html((moveX - startX)+'<br/>'+result.html());
+					$obj.trigger('MoveEnd', {
+						xStep: moveX - startX,
+						yStep: moveY - startY
+					});
+					moveX = moveY = null;
+				}
+
+				$obj.off('touchend');
+				$obj.off('touchmove');
+			});
+			// result.html(len+'<br/>'+result.html());
 		});
 	}
 	global.TouchEvent = TouchEvent;
 })(this);
+
 /*简单播放器*/
 (function(global){
 	var $main_container;
@@ -366,32 +289,7 @@
 		}
 	}
 })(this);
-(function(win) {
-    var lastTime = 0;
-    var vendors = ['webkit', 'moz'];
-    for(var x = 0; x < vendors.length && !win.requestAnimationFrame; ++x) {
-        win.requestAnimationFrame = win[vendors[x] + 'RequestAnimationFrame'];
-        win.cancelAnimationFrame = win[vendors[x] + 'CancelAnimationFrame'] ||    // name has changed in Webkit
-                                      win[vendors[x] + 'CancelRequestAnimationFrame'];
-    }
 
-    if (!win.requestAnimationFrame) {
-        win.requestAnimationFrame = function(callback, element) {
-            var currTime = new Date().getTime();
-            var timeToCall = Math.max(0, 16.7 - (currTime - lastTime));
-            var id = win.setTimeout(function() {
-                callback(currTime + timeToCall);
-            }, timeToCall);
-            lastTime = currTime + timeToCall;
-            return id;
-        };
-    }
-    if (!win.cancelAnimationFrame) {
-        win.cancelAnimationFrame = function(id) {
-            clearTimeout(id);
-        };
-    }
-}(window));
 
 // $(function(){
 // 	result = $('<div style="position:fixed;z-index:101;left:10px;top:100px;width:300px;height:100px;background:rgba(100,100,100,0.3);"></div>').appendTo($('body'));
@@ -400,31 +298,55 @@ $(function() {
 	var win = $(window);
 	var w = win.width();
 	var h = win.height();
-	$('body').width(w).height(h);
+	var $body = $('body').width(w).height(h);
+	var $doc = $(document)
+	function scrollBy(x,y){
+		var sLeft = win.scrollLeft();
+		var sTop = win.scrollTop();
+
+		scrollTo(sLeft + x,sTop + y);
+	}
+	function scrollTo(x,y){
+		window.scrollTo(x,y);
+	}
+	setTimeout(function(){
+		scrollTo(w/2,0);
+	},200);
+	
 	$('#sort_nav ul,#main_container').height(h);
+	$body.on('Move',function(e){
+		if(isShowNav){
+			e.preventDefault();
+		}
+	}).on('SwipeLeft',hide_nav);
+	TouchEvent($body);
 	$('#operator_container').width(w).height(h);
+	var $top_layer = $('.top_layer');
 	var $main_container = $('#main_container');
 
 	var widthMain = $main_container.width();
 	var heightMain = $main_container.height();
-	
-	var hide_nav = function() {
-		$main_container.addClass('off').removeClass('on');
+	var hide_nav = function(){
+		$body.removeClass('show_nav').addClass('off');
 	}
 	var show_nav = function() {
-		$main_container.addClass('on').removeClass('off');
+		$body.addClass('show_nav').removeClass('off');
 	}
+	var $main = $('#main');
+	var isShowNav = false;
 	$('.btn_nav').click(function() {
 		$('#n_menu').fadeOut();
-		if ($main_container.hasClass('on')) {
+		if(isShowNav){
+			isShowNav = false;
 			hide_nav();
-		} else {
+		}else{
+			isShowNav = true;
 			show_nav();
-		}
+		}		
 	});
 
 	var $operator = $('#operator');
-	var $operator_container = $('#operator_container');//.scrollLeft(w/2);
+	$doc.scrollLeft(w/2);
 	var offset = $operator.position();
 	var data = {
 		scale: 1,
@@ -432,8 +354,8 @@ $(function() {
 		height: $operator.height()
 	}
 	var scale_total = 1;//重置后累计的缩放比
-	var RESET_SCALE = 1.3;//达到这个缩放比后就重置
-	var MAX_SCALE = 2;
+	var RESET_SCALE = 1.2;//达到这个缩放比后就重置
+	var MAX_SCALE = 3;
 	var MAX_WIDTH = MAX_SCALE*data.width;
 	var MIN_WIDTH = w;
 	var $middleDot = $operator.find('div');
@@ -448,16 +370,13 @@ $(function() {
 		});
 		scale_total = 1;
 		data = $.extend({},oldData);
-		$operator_container.css('padding-top',0);
-		$operator_container.scrollLeft(w/2).scrollTop(0);
+		$body.css('padding-top',0);
+		scrollTo(w/2,0);
 		gm && gm.resize();
 		callback && callback();
 		
 	}
-	function resetScroll(){
-		var scale = data.scale;
-		$operator_container.scrollLeft(data.width*scale/2).scrollTop(data.height*scale/2);
-	}
+	
 	/*绑定事件（缩放和拖拽）*/
 	function resetScale (scale,type){
 		if(scale == 1){
@@ -473,8 +392,8 @@ $(function() {
 			height: newHeight
 		});
 		
-		$operator_container.css('padding-top',newHeight < h?(h- newHeight )/2:0);
-		$operator_container.scrollLeft($operator_container.scrollLeft()+(newWidth - oldWidth)/2).scrollTop($operator_container.scrollTop()+(newHeight - oldHeight)/2);
+		$body.css('padding-top',newHeight < h?(h- newHeight )/2:0);
+		scrollBy((newWidth - oldWidth)/2,(newHeight - oldHeight)/2);
 		data = {
 			scale: 1,
 			width: newWidth,
@@ -485,7 +404,7 @@ $(function() {
 	};
 	
 	var lastScale = 1;
-	$operator_container.on('Scale', function(e, d) {
+	$body.on('Scale', function(e, d) {
 		isChanging = true;
 		var scale = d.scale * data.scale;
 		
@@ -495,13 +414,10 @@ $(function() {
 		}
 		lastScale = scale;
 		// result.html(lastScale+'scale<br/>'+result.html());
-		var ScaleFn = function(){
-			$operator.css({
-				transform: 'scale(' + scale + ',' + scale + ')'
-			})
-		}
-		ScaleFn();
-		// requestAnimationFrame(ScaleFn);
+		$operator.css({
+			transform: 'scale(' + scale + ',' + scale + ')'
+		});
+
 	})
 	.on('ScaleEnd', function(e, d) {
 		if(!isChanging){
@@ -518,12 +434,11 @@ $(function() {
 			resetScale(scale_total,2);
 		}else{
 			data.scale = scale;
-			resetScale(scale,3);
+			// resetScale(scale,3);
 		}
 	});
 	var isChanging = false;
 	
-	TouchEvent($operator);
 
 	require.config({
         paths:{
@@ -618,8 +533,7 @@ $(function() {
 							});
 							getJson('./data/map/china.geo.json',function(mapData){
 								gm.load(mapData);
-					 			gm.render();return;
-					 			debugger;
+					 			gm.render();
 					 			gm.zr.on("click",function(e){
 					 				if(global_jsonid || isChanging){//防止多次点击
 					 					return;
@@ -645,7 +559,7 @@ $(function() {
 															$btn_back.remove();
 									 					});
 													}
-													var $btn_back = $('<div id="btn_back">返回</div>').appendTo($main_container).click(back);
+													var $btn_back = $('<div id="btn_back">返回</div>').appendTo($top_layer).click(back);
 								 				});
 									 		})
 								 		}
