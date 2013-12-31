@@ -220,7 +220,7 @@ body.off .fix_layer{
 	cursor: pointer;
 }
 .bottom_layer{
-	bottom: 0;display: none;
+	bottom: 0;
 }
 .btn_player{
 	width: 24px;
