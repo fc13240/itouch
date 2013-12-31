@@ -106,7 +106,36 @@
 			b = touches[1];
 		return Math.sqrt(pow(a.pageX - b.pageX) + pow(a.pageY - b.pageY));
 	}
-	var TouchEvent = function($obj) {
+	var TouchEvent = function($obj) {return;
+		$obj.off('touchstart');
+		$obj.off('touchmove');
+		$obj.off('touchend');
+
+		// var startX_swip,startY_swip,moveX_swip,moveY_swip;
+		// $obj.on('touchstart',function(e){
+		// 	// e.preventDefault();
+		// 	var touches = e.originalEvent.touches;
+		// 	var len = touches.length;
+		// 	if(len == 1){e.stopPropagation();
+		// 		var te = touches[0];
+		// 		startX_swip = te.pageX;
+		// 		startY_swip = te.pageY;
+		// 	}
+		// }).on('touchmove',function(e){
+		// 	// e.preventDefault();
+		// 	var touches = e.originalEvent.touches;
+		// 	var len = touches.length;
+		// 	if(len == 1){e.stopPropagation();
+		// 		var te = touches[0];
+		// 		moveX_swip = te.pageX;
+		// 		moveY_swip = te.pageY;
+		// 	}
+		// }).on('touchend',function(e){
+		// 	if(Math.abs(moveY_swip - startY_swip) < 50){
+		// 		var eventType = moveX_swip - startX_swip < 0 ? 'SwipeLeft' : 'SwipeRight';
+		// 		$obj.trigger(eventType);
+		// 	}
+		// });
 		var startLineLen = 0;
 		var scaleCache = 1;
 		$obj.on('touchstart.scale', function(eStart) {
@@ -123,16 +152,16 @@
 				eMove.preventDefault();
 				var moveLineLen = lineLength(moveTouchEvent);
 				var scale = moveLineLen / startLineLen;
-				scalecache = scale;
+				scaleCache = scale;
 				$obj.trigger('Scale', {
 					scale: scale
 				});
 			}
 		}).on('touchend.scale', function() {
 			$obj.trigger('ScaleEnd', {
-				scale: scalecache
+				scale: scaleCache
 			});
-			scalecache = 1;
+			scaleCache = 1;
 		});
 	}
 	global.TouchEvent = TouchEvent;
@@ -364,14 +393,14 @@
     }
 }(window));
 
-$(function(){
-	result = $('<div style="position:fixed;z-index:101;left:10px;top:100px;width:300px;height:100px;background:rgba(100,100,100,0.3);"></div>').appendTo($('body'));
-});
+// $(function(){
+// 	result = $('<div style="position:fixed;z-index:101;left:10px;top:100px;width:300px;height:100px;background:rgba(100,100,100,0.3);"></div>').appendTo($('body'));
+// });
 $(function() {
 	var win = $(window);
 	var w = win.width();
 	var h = win.height();
-	$('#main').width(w).height(h);
+	$('body').width(w).height(h);
 	$('#sort_nav ul,#main_container').height(h);
 	$('#operator_container').width(w).height(h);
 	var $main_container = $('#main_container');
@@ -395,13 +424,12 @@ $(function() {
 	});
 
 	var $operator = $('#operator');
+	var $operator_container = $('#operator_container');//.scrollLeft(w/2);
 	var offset = $operator.position();
 	var data = {
 		scale: 1,
 		width: $operator.width(),
-		height: $operator.height(),
-		left: offset.left,
-		top: offset.top
+		height: $operator.height()
 	}
 	var scale_total = 1;//重置后累计的缩放比
 	var RESET_SCALE = 1.3;//达到这个缩放比后就重置
@@ -409,72 +437,55 @@ $(function() {
 	var MAX_WIDTH = MAX_SCALE*data.width;
 	var MIN_WIDTH = w;
 	var $middleDot = $operator.find('div');
-	// setTimeout(function(){
-	// 	$operator.css({
-	// 		// 'transform-origin': '100px 30px',
-	// 		// transform: 'scale(1.2,1.2)',
-	// 		transform: 'scale(2,2)'
-	// 	});
-	// },100);
-	
 	var oldData = $.extend({},data);
 	// 重置到原始尺寸和位置及缩放
 	function resetToOldOffset(callback){
 		var scale = oldData.scale;
 		$operator.css({
 			transform: 'scale('+scale+','+scale+')',
-			'transform-origin': 'center center',
 			width: oldData.width,
-			height: oldData.height,
-			left: oldData.left,
-			top: oldData.top
+			height: oldData.height
 		});
 		scale_total = 1;
 		data = $.extend({},oldData);
+		$operator_container.css('padding-top',0);
+		$operator_container.scrollLeft(w/2).scrollTop(0);
 		gm && gm.resize();
 		callback && callback();
 		
 	}
+	function resetScroll(){
+		var scale = data.scale;
+		$operator_container.scrollLeft(data.width*scale/2).scrollTop(data.height*scale/2);
+	}
 	/*绑定事件（缩放和拖拽）*/
-	function resetScale (scale){
-		var num = $operator.css('transform-origin').split(' ');
-		var origin_x = parseFloat(num[0]);
-		var origin_y = parseFloat(num[1]);
+	function resetScale (scale,type){
+		if(scale == 1){
+			return;
+		}
 		var oldWidth = data.width;
 		var oldHeight = data.height;
 		var newWidth = oldWidth * scale;
 		var newHeight = oldHeight * scale;
-		var newLeft = data.left - (newWidth - oldWidth) * (origin_x / oldWidth);
-		var newTop = data.top - (newHeight - oldHeight) * (origin_y / oldHeight);
-		origin_x *= scale;
-		origin_y *= scale;
-		var transform_origin = origin_x + 'px ' + origin_y + 'px';
-		$middleDot.css({
-			left: origin_x,
-			top: origin_y
-		});
 		$operator.css({
 			transform: 'scale(1,1)',
-			'transform-origin': transform_origin,
 			width: newWidth,
 			height: newHeight
-			,
-			left: newLeft,
-			top: newTop
 		});
+		
+		$operator_container.css('padding-top',newHeight < h?(h- newHeight )/2:0);
+		$operator_container.scrollLeft($operator_container.scrollLeft()+(newWidth - oldWidth)/2).scrollTop($operator_container.scrollTop()+(newHeight - oldHeight)/2);
 		data = {
 			scale: 1,
 			width: newWidth,
 			height: newHeight
-			,
-			left: newLeft,
-			top: newTop
 		}
 		gm && gm.resize();
 		scale_total = 1;
 	};
 	
-	$operator.on('Scale', function(e, d) {
+	var lastScale = 1;
+	$operator_container.on('Scale', function(e, d) {
 		isChanging = true;
 		var scale = d.scale * data.scale;
 		
@@ -482,134 +493,36 @@ $(function() {
 		if (toWidth > MAX_WIDTH || toWidth < MIN_WIDTH) {
 			return;
 		}
-		// result.html(scale+'--<br/>'+result.html());
+		lastScale = scale;
+		// result.html(lastScale+'scale<br/>'+result.html());
 		var ScaleFn = function(){
-			// result.html(scale+'<br/>'+result.html());
 			$operator.css({
 				transform: 'scale(' + scale + ',' + scale + ')'
 			})
 		}
-		requestAnimationFrame(ScaleFn);
+		ScaleFn();
+		// requestAnimationFrame(ScaleFn);
 	})
-	// .on('ScaleEnd', function(e, d) {
-	// 	isChanging = false;
-	// 	var scale = d.scale * data.scale;
-	// 	var toWidth = scale * data.width;
-	// 	scale_total *= scale;
-	// 	if (toWidth > MAX_WIDTH || toWidth < MIN_WIDTH) {
-	// 		scale = (toWidth > MAX_WIDTH?MAX_WIDTH:MIN_WIDTH)/data.width;
-	// 		resetScale(scale);
-	// 	}else if(scale_total > RESET_SCALE || scale_total < 1/RESET_SCALE){//放大或缩小一定倍数都进行重绘
-	// 		resetScale(scale_total);
-	// 	}else{
-	// 		data.scale = scale;
-	// 	}
-	// });
+	.on('ScaleEnd', function(e, d) {
+		if(!isChanging){
+			return;
+		}
+		isChanging = false;
+		var scale = lastScale * data.scale;
+		var w = data.width;
+		var toWidth = scale * w;
+		scale_total *= scale;
+		if (toWidth > MAX_WIDTH || toWidth < MIN_WIDTH) {
+			resetScale((toWidth > MAX_WIDTH?MAX_WIDTH:MIN_WIDTH)/w,1);
+		}else if(scale_total > RESET_SCALE || scale_total < 1/RESET_SCALE){//放大或缩小一定倍数都进行重绘
+			resetScale(scale_total,2);
+		}else{
+			data.scale = scale;
+			resetScale(scale,3);
+		}
+	});
 	var isChanging = false;
-	// $main_container.on('Move', function(e, d) {result.html('Move<br/>'+result.html());
-	// 	isChanging = true;
-	// 	var xStep = d.xStep,
-	// 		yStep = d.yStep;
-	// 	var scale = data.scale;
-	// 	var newLeft = data.left + xStep;
-	// 	var newTop = data.top + yStep;
-	// 	var width = data.width;
-	// 	var height = data.height;
-	// 	var mWidth = width * (scale - 1) / 2;//以中心点缩放
-	// 	var mHeight = height * (scale - 1) /2;
-
-	// 	// 拖拽时加边界限制
-	// 	if(newLeft - mWidth > 0){
-	// 		newLeft = mWidth;
-	// 	}else if(newLeft + mWidth + width < widthMain){
-	// 		newLeft = widthMain - mWidth - width;
-	// 	}
-
-	// 	if(height + mHeight < heightMain){//高度不够时，强制不让拖动
-	// 		newTop = data.top;
-	// 		// result.html(newTop - mHeight+'<br/>'+result.html());
-	// 		// if(newTop - mHeight < 0){
-	// 		// 	newTop = 0;
-	// 		// }else if(newTop + mHeight + height > heightMain){
-	// 		// 	newTop = heightMain - mHeight - height;
-	// 		// }
-	// 	}else{
-	// 		if(newTop - mHeight > 0){
-	// 			newTop = mHeight;
-	// 		}else if(newTop + mHeight + height < heightMain){
-	// 			newTop = heightMain - mHeight - height;
-	// 		}
-	// 	}
-
-	// 	$operator.css({
-	// 		'left': newLeft,
-	// 		'top': newTop
-	// 	});
-	// }).on('MoveEnd', function(e, d) {result.html('end<br/>'+result.html());
-	// 	isChanging = false;
-	// 	/*这里更新transform-origin时会改变位置!!!!!!*/
-	// 	var scale = data.scale;
-	// 	var width = data.width;
-	// 	var height = data.height;
-	// 	var mWidth = width * (scale - 1) / 2;//以中心点缩放
-	// 	var mHeight = height * (scale - 1) /2;
-	// 	var num = $operator.css('transform-origin').split(' ');
-	// 	var old_origin_x = parseFloat(num[0]);
-	// 	var old_origin_y = parseFloat(num[1]);
-	// 	var origin_x = old_origin_x - d.xStep/scale;
-	// 	var origin_y = old_origin_y - d.yStep/scale;
-
-	// 	var transform_origin = origin_x +'px '+(origin_y)+'px';
-	// 	// width/data.width * origin_x - width/data.width * old_origin_x
-	// 	// (scale - 1) * (origin_x - old_origin_x)
-	// 	var offset = $operator.position();
-	// 	var newLeft = data.left + d.xStep;// - d.xStep * (scale -1);
-	// 	var newTop = data.top + d.yStep;// - d.yStep * (scale -1);
-	// 	if(newLeft - mWidth > 0){
-	// 		newLeft = mWidth;
-	// 	}else if(newLeft + mWidth + width < widthMain){
-	// 		newLeft = widthMain - mWidth - width;
-	// 	}
-	// 	if(height + mHeight < heightMain){
-	// 		// result.html(newTop - mHeight+'end<br/>'+result.html());
-	// 		if(newTop - mHeight < 0){
-	// 			newTop = 0;
-	// 		}else if(newTop + mHeight + height > heightMain){
-	// 			newTop = heightMain - mHeight - height;
-	// 		}
-	// 	}else{
-	// 		if(newTop - mHeight > 0){
-	// 			newTop = mHeight;
-	// 		}else if(newTop + mHeight + height < heightMain){
-	// 			newTop = heightMain - mHeight - height;
-	// 		}
-	// 	}
-	// 	// var newLeft = data.left + d.xStep * (scale );
-	// 	// var newTop = data.top + d.yStep * (scale );
-	// 	// $operator.css({
-	// 	// 	'left': newLeft,
-	// 	// 	'top': newTop,
-	// 	// 	'transform-origin': transform_origin
-	// 	// });
-	// 	data.left = newLeft;
-	// 	data.top = newTop;
-	// 	// $middleDot.css({
-	// 	// 	'transform-origin': transform_origin,
-	// 	// 	left: origin_x
-	// 	// 	,
-	// 	// 	top: origin_y
-	// 	// })
-
-	// 	// var num = $operator.css('transform-origin').split(' ');
-	// 	// var origin_x = parseFloat(num[0]) - d.xStep/scale;
-	// 	// var origin_y = parseFloat(num[1]) - d.yStep/scale;
-	// 	// result.html(transform_origin+'<br/>'+result.html());
-	// 	// setTimeout(function(){
-	// 	// 	$operator.css({
-	// 	// 		'transform-origin': transform_origin
-	// 	// 	});	
-	// 	// },500)
-	// });	
+	
 	TouchEvent($operator);
 
 	require.config({
@@ -705,7 +618,8 @@ $(function() {
 							});
 							getJson('./data/map/china.geo.json',function(mapData){
 								gm.load(mapData);
-					 			gm.render();
+					 			gm.render();return;
+					 			debugger;
 					 			gm.zr.on("click",function(e){
 					 				if(global_jsonid || isChanging){//防止多次点击
 					 					return;

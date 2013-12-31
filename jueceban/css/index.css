@@ -2,7 +2,7 @@
 ul{list-style:none;}
 
 body{
-	overflow: hidden;
+	/*overflow: hidden;*/
 }
 /*@-webkit-keyframes show_nav
 {
@@ -24,13 +24,24 @@ body{
 	from {left: 300px}
 	to {left: 0}
 }
+@-webkit-keyframes show_nav_320 /* Safari 和 Chrome */
+{
+	from {left: 0}
+	to {left: 270px}
+}
+@-webkit-keyframes hide_nav_320 /* Safari 和 Chrome */
+{
+	from {left: 270px}
+	to {left: 0}
+}
 #main{
-	width: 100%;
+	/*width: 100%;*/
 	height:100%;
-	overflow: hidden; 
+	/*overflow: hidden; */
 	position: relative;
 }
 #sort_nav{
+	display: none;
 	position: absolute;
 	z-index: 2;
 	left: 0;
@@ -40,16 +51,6 @@ body{
 	color: white;
 }
 
-#sort_nav.on{
-	left: 130px;
-	animation: show_nav .5s;
-	-webkit-animation: show_nav .5s;	/* Safari 和 Chrome */
-}
-#sort_nav.off{
-	left: 0;
-	animation: hide_nav .5s;
-	-webkit-animation: hide_nav .5s;	/* Safari 和 Chrome */
-}
 #sort_nav ul{
 	overflow-y: scroll;
 }
@@ -66,15 +67,15 @@ body{
 	font-size: 18px;
 }
 #main_container{
-	position: absolute;
+	/*position: absolute;
 	z-index: 11;
 	left: 0;
 	top: 0;
 	background-color: white;
 	height:1000px;
-	text-align: center;
-	width: 100%;
-	overflow: hidden;
+	text-align: center;*/
+	/*width: 100%;*/
+	/*overflow: scroll;*/
 }
 #main_container.on{
 	left: 300px;
@@ -138,7 +139,7 @@ body{
 	cursor: pointer;
 }
 .bottom_layer{
-	bottom: 0;
+	bottom: 0;display: none;
 }
 .btn_player{
 	width: 24px;
@@ -273,4 +274,32 @@ body{
 #n_back > div{
 	right: 10px;
 	left: auto;
+}
+
+/*对分辨率为320的进行适配*/
+@media (max-width: 320px),
+(max-device-width: 320px){
+	#sort_nav{
+		width: 270px;
+	}
+	#main_container.on{
+		left: 270px;
+		animation: show_nav_320 .5s;
+		-webkit-animation: show_nav_320 .5s;	/* Safari 和 Chrome */
+	}
+	#main_container.off{
+		left: 0;
+		animation: hide_nav_320 .5s;
+		-webkit-animation: hide_nav_320 .5s;	/* Safari 和 Chrome */
+	}
+	#main_container.on .fix_layer{
+		left: 270px;
+		animation: show_nav_320 .5s;
+		-webkit-animation: show_nav_320 .5s;	/* Safari 和 Chrome */
+	}
+	#main_container.off .fix_layer{
+		left: 0;
+		animation: hide_nav_320 .5s;
+		-webkit-animation: hide_nav_320 .5s;	/* Safari 和 Chrome */
+	}
 }
