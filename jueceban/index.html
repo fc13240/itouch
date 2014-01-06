@@ -11,7 +11,7 @@
 	<meta name="keywords" content="" />
 	<meta name="description" content="" />
 	<meta name="viewport" content="width=320,initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
-	<link type="text/css" rel="stylesheet" media="screen" href="./css/index.css?2" />
+	<link type="text/css" rel="stylesheet" media="screen" href="./css/index.css?1" />
 	<script src="./js/jquery-1.8.2.js"></script>
 	<script src="./js/highcharts.js"></script>
 	<script type="text/javascript" src="./js/esl.js?1"></script>
@@ -32,6 +32,16 @@
 				<li data-id="sd_1" class="big">相对湿度实况</li>
 				<li data-id="sd_1">最大相对湿度</li>
 				<li data-id="sd_2">最小相对湿度</li>
+				<li data-id="radar_1" class="big">单站雷达</li>
+				<li data-id="radar_2" class="big">雷达拼图</li>
+				<li data-id="radar_2">全国</li>
+				<li data-id="radar_3">东北</li>
+				<li data-id="radar_4">华北</li>
+				<li data-id="radar_5">华南</li>
+				<li data-id="radar_6">华中</li>
+				<li data-id="radar_7">西北</li>
+				<li data-id="radar_8">西南</li>
+				<li data-id="radar_9">华东</li>
 				<li data-id="wr_1" class="big">环境气象</li>
 				<li data-id="wr_1">空气污染扩散条件</li>
 				<li data-id="wr_2">PM2.5实况</li>
@@ -189,6 +199,72 @@
 				{'img':'./img/yun/23.jpg','time': '2013年12月23日08时'},
 				{'img':'./img/yun/24.jpg','time': '2013年12月24日08时'}
 			]
+		}
+		,
+		//单站雷达
+		radar_1: {
+			'type': 'json',
+			'items': [
+				{'src':'./data/singleradar.json?aa'}
+			],
+			'color': 'radar',
+			'config':{
+					weatherStyle:{
+						onclick: function(event){
+							var url='wisp://pUrl.wi?url=http://mobile.weather.com.cn/product/templates/templates_ImgPlay_main.html?dataFile=http://i.weather.com.cn/i/product/json/radarM/p_'+event.target.id+'.html';
+							window.location.href=url;
+							return true;
+						}
+					}
+				}
+		},
+		//雷达拼图产品 每个产品是一个外部链接形式产品
+		radar_2: {
+			'type':'weburl',
+			'name':'全国',
+			'url':'http://mobile.weather.com.cn/product/templates/templates_ImgPlay_main.html?dataFile=http://i.weather.com.cn/i/product/json/radarM/JC_RADAR_CHN_JB.html'
+		}
+		,
+		radar_3: {
+			'type':'weburl',
+			'name':'东北',
+			'url':'http://mobile.weather.com.cn/product/templates/templates_ImgPlay_main.html?dataFile=http://i.weather.com.cn/i/product/json/radarM/JC_RADAR_DB_JB.html'
+		}
+		,
+		radar_4: {
+			'type':'weburl',
+			'name':'华北',
+			'url':'http://mobile.weather.com.cn/product/templates/templates_ImgPlay_main.html?dataFile=http://i.weather.com.cn/i/product/json/radarM/JC_RADAR_HB_JB.html'
+		}
+		,
+		radar_5: {
+			'type':'weburl',
+			'name':'华南',
+			'url':'http://mobile.weather.com.cn/product/templates/templates_ImgPlay_main.html?dataFile=http://i.weather.com.cn/i/product/json/radarM/JC_RADAR_HN_JB.html'
+		}
+		,
+		radar_6: {
+			'type':'weburl',
+			'name':'华中',
+			'url':'http://mobile.weather.com.cn/product/templates/templates_ImgPlay_main.html?dataFile=http://i.weather.com.cn/i/product/json/radarM/JC_RADAR_HZ_JB.html'
+		}
+		,
+		radar_7: {
+			'type':'weburl',
+			'name':'西北',
+			'url':'http://mobile.weather.com.cn/product/templates/templates_ImgPlay_main.html?dataFile=http://i.weather.com.cn/i/product/json/radarM/JC_RADAR_XB_JB.html'
+		}
+		,
+		radar_8: {
+			'type':'weburl',
+			'name':'西南',
+			'url':'http://mobile.weather.com.cn/product/templates/templates_ImgPlay_main.html?dataFile=http://i.weather.com.cn/i/product/json/radarM/JC_RADAR_XN_JB.html'
+		}
+		,
+		radar_9: {
+			'type':'weburl',
+			'name':'华东',
+			'url':'http://mobile.weather.com.cn/product/templates/templates_ImgPlay_main.html?dataFile=http://i.weather.com.cn/i/product/json/radarM/JC_RADAR_HD_JB.html'
 		}
 	}
 	</script>

@@ -443,7 +443,7 @@ $(function() {
 	require.config({
         paths:{
             zrender:'./js/zrender' ,
-			GeoMap:'./js/GeoMap3' ,
+			GeoMap:'./js/GeoMap' ,
 			"zrender/tool/util":'./js/zrender' 
         }
     });
@@ -466,6 +466,9 @@ $(function() {
 		'wendu': function(val){
 			val = parseFloat(val);
 			return val > 0?'rgba(255,0,0,1)':val == 0?'rgba(0,0,0,1)':'rgba(0,0,255,1)'
+		},
+		'radar': function(){
+			return '#f0f';
 		}
 	};
 	//初始化数据并绑定事件
@@ -475,7 +478,7 @@ $(function() {
 		var player;
 		var isInitMap = false;
 		var global_jsonid;
-		var init = function(data_id){
+		var init = function(data_id){console.log(isInitMap);
 			if(player){
 				player.hide();
 				player = null;
@@ -511,14 +514,17 @@ $(function() {
 						nextFn && nextFn();
 					}).attr('src',items[toIndex]['img']));
 				}
-			}else if(type == 'json'){//渲染地图数据
+			}else if(type == 'json'){//渲染地图数据	
 				var colorType = COLOR[data.color];
 				renderFn = function(toIndex,nextFn){
 					var fn = function(){
 						getJson(items[toIndex]['src'],function(pointData){
-							$.each(pointData.features,function(i,v){
-								v.properties.color = colorType(v.properties.value);
-							});
+							if(colorType){
+								$.each(pointData.features,function(i,v){
+									v.properties.color = colorType(v.properties.value);
+								});
+							}
+							
 				 			gm.loadWeather(pointData,global_jsonid);
 							gm.refresh();
 							Loading.hide();
@@ -528,9 +534,10 @@ $(function() {
 					Loading.show();
 					if(!isInitMap){
 						require(['GeoMap'],function(GeoMap) {
-							gm = GeoMap.init({
+							var conf = $.extend(true,{ 
 								container: 'operator'
-							});
+							},data.config);
+							gm = GeoMap.init(conf);
 							getJson('./data/map/china.geo.json',function(mapData){
 								gm.load(mapData);
 					 			gm.render();
@@ -570,6 +577,7 @@ $(function() {
 							fn();
 						});
 					}else{
+						gm.updateCfg(data.config,true);
 						fn();
 					}
 				}
@@ -578,6 +586,8 @@ $(function() {
 				var fn = data.fnname;
 				fn = fnObj[fn];
 				fn && fn();
+			}else if (type == 'weburl'){
+				window.location.href='wisp://pUrl.wi?url='+data.url;
 			}
 
 			if(len > 1){
@@ -674,9 +684,9 @@ $(function() {
 		var $sort_nav = $('#sort_nav ul').click(function(e){
 			var target = $(e.target);
 			if(target.is('li')){
+				hide_nav();
 				var data_id = target.data('id');
 				if(data_id){
-					hide_nav();
 					init(data_id);
 					header_title.html(target.text());
 				}
