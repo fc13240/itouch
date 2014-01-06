@@ -62,9 +62,8 @@ ul{list-style:none;margin: 0;padding: 0;}
 	to {left: 0}
 }
 body{
-	overflow: scroll;
+    overflow: scroll;
 }
-
 body.show_nav{
 	overflow: hidden;
 }
