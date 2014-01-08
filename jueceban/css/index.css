@@ -284,6 +284,9 @@ body.off .fix_layer{
 	margin-top: -8px;
 	z-index: 102;
 }
+#operator{
+	width:765px;height:765px;
+}
 #operator img{
 	width: 100%;
 	/*height: 100%;*/

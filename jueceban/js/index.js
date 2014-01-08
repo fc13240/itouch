@@ -382,6 +382,7 @@ $(function() {
 		if(scale == 1){
 			return;
 		}
+		scale_total = 1;//此bug引起第一次初始化图片后缩放问题
 		var oldWidth = data.width;
 		var oldHeight = data.height;
 		var newWidth = oldWidth * scale;
@@ -400,7 +401,6 @@ $(function() {
 			height: newHeight
 		}
 		gm && gm.resize();
-		scale_total = 1;
 	};
 	
 	var lastScale = 1;
@@ -431,7 +431,7 @@ $(function() {
 		if (toWidth > MAX_WIDTH || toWidth < MIN_WIDTH) {
 			resetScale((toWidth > MAX_WIDTH?MAX_WIDTH:MIN_WIDTH)/w,1);
 		}else if(scale_total > RESET_SCALE || scale_total < 1/RESET_SCALE){//放大或缩小一定倍数都进行重绘
-			resetScale(scale_total,2);
+			resetScale(scale_total,2+' '+data.scale+' '+lastScale);
 		}else{
 			data.scale = scale;
 			// resetScale(scale,3);
