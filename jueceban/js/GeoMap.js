@@ -405,6 +405,7 @@ define("GeoMap",["zrender","zrender/tool/util"],
 								y:polygonList[1]
 							}
 					 };
+
 					 if (obj.config.showName)shapeObj.style.text=shape.properties.text;
 					 if (shape.properties.color !== undefined ){
 						 shapeObj.style.color=shape.properties.color;
@@ -413,6 +414,36 @@ define("GeoMap",["zrender","zrender/tool/util"],
 						 shapeObj.pshapeId=shape.properties.prov_name;
 					 }
 					 seft.pathArray.push(shapeObj);
+				}else if (shapeType == 'PointImage'){
+
+					var imgHeight = parseFloat(shape.properties.height);
+					var shapeObj={
+							shape : 'image',
+							//id : shape.properties.id,
+							style : {
+								x:polygonList[0],
+								y:polygonList[1] - imgHeight
+							}
+					 };
+					 util.mergeFast(shapeObj.style, shape.properties,false,true); 
+					 if (shape.properties.prov_name !== undefined ){
+						 shapeObj.pshapeId=shape.properties.prov_name;
+					 }
+					 if (shape.properties.rotation !== undefined ){
+						 shapeObj.rotation =  new Array();
+						 shapeObj.rotation[0]=shape.properties.rotation/180*Math.PI;
+						 shapeObj.rotation[1]= parseFloat(polygonList[0]);
+						 shapeObj.rotation[2]= parseFloat(shapeObj.style.y+ imgHeight);
+						 //现所有旋转统一从文件左下角进行。
+					 }
+					 if (!shapeObj.id)
+					 {
+						var newShapeid = obj.zr.newShapeId('weatherShape');
+						shapeObj.id=newShapeid;
+					 }
+					 geomap.log(shapeObj);
+					 seft.pathArray.push(shapeObj);
+				
 				}
 				
 				
@@ -472,6 +503,10 @@ define("GeoMap",["zrender","zrender/tool/util"],
 				return coordinates;
 			  },
 			  seft.PointCircle = function(coordinates){
+				coordinates = seft.makePoint(coordinates);
+				return coordinates;
+			  },
+			  seft.PointImage = function(coordinates){
 				coordinates = seft.makePoint(coordinates);
 				return coordinates;
 			  },

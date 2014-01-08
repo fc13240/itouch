@@ -6,46 +6,64 @@
 	<meta content="yes" name="apple-touch-fullscreen"/>
 	<meta content="telephone=no" name="format-detection"/>
 	<meta content="black" name="apple-mobile-web-app-status-bar-style">
-	<title></title>
+	<title>实况</title>
 	<meta name="revisit-after"  content="1 days" />
 	<meta name="keywords" content="" />
 	<meta name="description" content="" />
 	<meta name="viewport" content="width=320,initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
 	<link type="text/css" rel="stylesheet" media="screen" href="./css/index.css?1" />
 	<script src="./js/jquery-1.8.2.js"></script>
-	<script src="./js/highcharts.js"></script>
+	<!--<script src="./js/highcharts.js"></script>-->
 	<script type="text/javascript" src="./js/esl.js?1"></script>
 	<script src="./js/index.js?21"></script>
-
+</head>
 <body>
 	<div id="main">
 		<nav id="sort_nav">
 			<ul>
-				<li data-id="js_1" class="big">降水产品</li>
-				<li data-id="js_1" class="init">24小时降水实况</li>
-				<li data-id="js_2">降水预报</li>
-				<li data-id="wd_1" class="big">温度产品</li>
-				<li data-id="wd_1">05点24小时变温</li>
-				<li data-id="wd_2">最低气温预报</li>
-				<li data-id="f_1" class="big">风场预报</li>
-				<li data-id="f_1">700hPa风场预报</li>
-				<li data-id="sd_1" class="big">相对湿度实况</li>
-				<li data-id="sd_1">最大相对湿度</li>
-				<li data-id="sd_2">最小相对湿度</li>
-				<li data-id="radar_1" class="big">单站雷达</li>
-				<li data-id="radar_2" class="big">雷达拼图</li>
-				<li data-id="radar_2">全国</li>
-				<li data-id="radar_3">东北</li>
-				<li data-id="radar_4">华北</li>
-				<li data-id="radar_5">华南</li>
-				<li data-id="radar_6">华中</li>
-				<li data-id="radar_7">西北</li>
-				<li data-id="radar_8">西南</li>
-				<li data-id="radar_9">华东</li>
-				<li data-id="wr_1" class="big">环境气象</li>
-				<li data-id="wr_1">空气污染扩散条件</li>
-				<li data-id="wr_2">PM2.5实况</li>
-				<li class="big" data-id="y_1">高度场叠加云图</li>
+				<li data-id="sk_js" class="big">降水实况</li>
+				<li data-id="sk_js" class="init">逐小时降水实况</li>
+				<li data-id="sk_js_24" class="init">24小时降水实况</li>
+
+				<li data-id="sk_qw" class="big">气温实况</li>
+				<li data-id="sk_qw">逐小时气温实况</li>
+				<li data-id="sk_qw_24_max">24小时最高温实况</li>
+				<li data-id="sk_qw_24_min">24小时最低温实况</li>
+				<li data-id="sk_qw_24_avg">24小时平均气温实况</li>
+				<li data-id="sk_qw_24_bw">24小时变温实况</li>
+
+				<li data-id="sk_wind" class="big">风向风速实况</li>
+				<li data-id="sk_wind">逐小时风向风速实况</li>
+
+				<li data-id="sk_sd" class="big">相对湿度实况</li>
+
+				<li data-id="sk_randar" class="big">单站雷达</li>
+
+				<li data-id="sk_randar_pt_china" class="big">雷达拼图</li>
+				<li data-id="sk_randar_pt_china">全国</li>
+				<li data-id="sk_randar_pt_db">东北</li>
+				<li data-id="sk_randar_pt_hb">华北</li>
+				<li data-id="sk_randar_pt_hn">华南</li>
+				<li data-id="sk_randar_pt_hz">华中</li>
+				<li data-id="sk_randar_pt_xb">西北</li>
+				<li data-id="sk_randar_pt_xn">西南</li>
+				<li data-id="sk_randar_pt_hd">华东</li>
+
+				<li data-id="sk_yt" class="big">卫星云图 【*】</li>
+				<li data-id="sk_yt">FY-2卫星云图 【*】</li>
+
+				<li class="big" data-id="sk_qdl_js">强对流天气监测 【*】</li>
+				<li data-id="sk_qdl_js">短时强降水实时监测 【*】</li>
+				<li data-id="sk_qdl_df">大风实时监测 【*】</li>
+				<li data-id="sk_qdl_bb">冰雹实时监测 【*】</li>
+				<li data-id="sk_qdl_sd">闪电实时监测 【*】</li>
+				<li data-id="sk_qdl_lb">雷暴实时监测 【*】</li>
+
+				<li class="big" data-id="sk_tqt_dm">天气图分析</li>
+				<li data-id="sk_tqt_dm">亚欧地面分析</li>
+				<li data-id="sk_tqt_500">亚欧高空分析500hPa</li>
+				<li data-id="sk_tqt_700">亚欧高空分析700hPa</li>
+				<li data-id="sk_tqt_850">亚欧高空分析850hPa</li>
 			</ul>
 		</nav>
 		<div id="main_container">
@@ -59,150 +77,144 @@
 				<h1>05点24小时变温</h1>
 				<div class="notice" id="n_back"><i>点击返回全国地图</i><div><div></div></div></div>
 			</div>
-			
-			<!-- <div id="btn_back">返回</div> -->
-			<!-- <div id="operator" style="position:absolute;left:0;top:43px;width:600px;height:350px;background:blue"> -->
-			<div id="operator" style="width:765px;height:645px;">
-				<!-- <div id="main_map" style="width:100%;height:100%;"></div> -->
-				<!-- <img id="testImg" src="./img/js_sk.jpg" style="width:100%;height:100%;"/> -->
-				<!-- <iframe src="http://10.14.85.53/weather/decision/Test/index.html" style="width:100%;height:100%"></iframe> -->
-				<!-- <div style="position:absolute;left:50%;top:50%;background:red;z-index:100;width:10px;height:10px;margin-left:-5px;margin-top:5px;"></div> -->
-			</div>
-			<!-- <div class="fix_layer bottom_layer" style="bottom:100px;">
-				<div class="tuli_layer"><img src="./img/tuli/shidu.jpg"/></div>
-				<span class="btn_player"></span>
-				<div class="progress">
-					<div class="time"><i>2013-12-30 12:32:00</i><div></div></div>
-					<span class="on"></span>
-					<span class="on"></span>
-					<span></span>
-					<span></span>
-					<span></span>
-				</div>
-			</div> -->
+			<div id="operator" style="width:765px;height:645px;"></div>
 		</div>
 	</div>
 	<script type="text/javascript">
-	var DATA_CONF = {
-		//24小时降水实况
-		js_1: {
+	var DATA_CONF = {};
+
+	// 降水实况
+	$.extend(DATA_CONF,{
+		// 逐小时降水实况
+		sk_js: {
 			'type': 'json',
 			'color': 'jiangshui',
 			'items': [
-				{'src':'./data/js_20.json','time': '2013年12月20日05时'},
-				{'src':'./data/js_21.json','time': '2013年12月20日06时'},
-				{'src':'./data/js_22.json','time': '2013年12月20日07时'},
-				{'src':'./data/js_23.json','time': '2013年12月20日08时'},
-				{'src':'./data/js_24.json','time': '2013年12月20日09时'}
+				{'src':'./data/sk_js/14010610.000.json','text': '2014年01月06日10点'},
+				{'src':'./data/sk_js/14010611.000.json','text': '2014年01月06日11点'},
+				{'src':'./data/sk_js/14010612.000.json','text': '2014年01月06日12点'},
+				{'src':'./data/sk_js/14010613.000.json','text': '2014年01月06日13点'},
+				{'src':'./data/sk_js/14010614.000.json','text': '2014年01月06日14点'}
 			]
 		},
-		//24小时降水预报
-		js_2: {
-			'type': 'img',
-			'tuli': './img/tuli/jiangshui.jpg',
+		//24小时降水实况
+		sk_js_24: {
+			'type': 'json',
+			'color': 'jiangshui',
 			'items': [
-				{'img':'./img/jsyb/24.jpg','time': '12日8时~13日8时'},
-				{'img':'./img/jsyb/48.jpg','time': '13日8时~14日8时'},
-				{'img':'./img/jsyb/72.jpg','time': '14日8时~15日8时'}
+				{'src':'./data/sk_js_24/.json','text': '2013年12月20日05时'},
+				{'src':'./data/sk_js_24/js_21.json','text': '2013年12月20日06时'},
+				{'src':'./data/sk_js_24/js_22.json','text': '2013年12月20日07时'},
+				{'src':'./data/sk_js_24/js_23.json','text': '2013年12月20日08时'},
+				{'src':'./data/sk_js_24/js_24.json','text': '2013年12月20日09时'}
 			]
 		}
-		,
-		// 05点24小时变温
-		wd_1: {
+	});
+	// 气温实况
+	$.extend(DATA_CONF,{
+		// 逐小时气温实况
+		sk_qw: {
 			'type': 'json',
 			'color': 'wendu',
 			'items': [
-				{'src':'./data/bw_20.json','time': '2013年12月20日05时'},
-				{'src':'./data/bw_21.json','time': '2013年12月20日06时'},
-				{'src':'./data/bw_22.json','time': '2013年12月20日07时'},
-				{'src':'./data/bw_23.json','time': '2013年12月20日08时'},
-				{'src':'./data/bw_24.json','time': '2013年12月20日09时'}
+				{'src':'./data/sk_qw/14010610.000.json','text': '2014年01月06日10点'},
+				{'src':'./data/sk_qw/14010611.000.json','text': '2014年01月06日11点'},
+				{'src':'./data/sk_qw/14010612.000.json','text': '2014年01月06日12点'},
+				{'src':'./data/sk_qw/14010613.000.json','text': '2014年01月06日13点'},
+				{'src':'./data/sk_qw/14010614.000.json','text': '2014年01月06日14点'}
 			]
-		}
-		,
-		//最低气温预报
-		wd_2: {
-			'type': 'img',
-			'tuli': './img/tuli/wendu.jpg',
+		},
+		// 24小时最高温实况
+		sk_qw_24_max: {
+			'type': 'json',
 			'color': 'wendu',
 			'items': [
-				{'img':'./img/zdqw/20.jpg','time': '12日8时~13日8时'},
-				{'img':'./img/zdqw/21.jpg','time': '13日8时~14日8时'},
-				{'img':'./img/zdqw/22.jpg','time': '14日8时~15日8时'},
-				{'img':'./img/zdqw/23.jpg','time': '15日8时~16日8时'},
-				{'img':'./img/zdqw/24.jpg','time': '16日8时~17日8时'}
+				{'src':'./data/sk_qw_24_max/14010202.000.json','text': '2014年01月02日02时'},
+				{'src':'./data/sk_qw_24_max/14010302.000.json','text': '2014年01月02日03时'},
+				{'src':'./data/sk_qw_24_max/14010402.000.json','text': '2014年01月02日04时'},
+				{'src':'./data/sk_qw_24_max/14010502.000.json','text': '2014年01月02日05时'},
+				{'src':'./data/sk_qw_24_max/14010602.000.json','text': '2014年01月02日06时'}
 			]
-		}
-		,
-		// 700hPa风场预报
-		f_1: {
-			'type': 'img',
+		},
+		// 24小时最低温实况
+		sk_qw_24_min: {
+			'type': 'json',
+			'color': 'wendu',
 			'items': [
-				{'img':'./img/feng/20.jpg','time': '2013年12月20日08时'},
-				{'img':'./img/feng/21.jpg','time': '2013年12月21日08时'},
-				{'img':'./img/feng/22.jpg','time': '2013年12月22日08时'},
-				{'img':'./img/feng/23.jpg','time': '2013年12月23日08时'},
-				{'img':'./img/feng/24.jpg','time': '2013年12月24日08时'}
+				{'src':'./data/sk_qw_24_min/14010214.000.json','text': '2014年01月02日14时'},
+				{'src':'./data/sk_qw_24_min/14010314.000.json','text': '2014年01月03日14时'},
+				{'src':'./data/sk_qw_24_min/14010414.000.json','text': '2014年01月04日14时'},
+				{'src':'./data/sk_qw_24_min/14010514.000.json','text': '2014年01月05日14时'},
+				{'src':'./data/sk_qw_24_min/14010614.000.json','text': '2014年01月06日14时'}
 			]
-		}
-		,
-		//最大相对湿度
-		sd_1: {
-			'type': 'img',
-			'tuli': './img/tuli/shidu.jpg',
+		},
+		// 24小时平均气温实况
+		sk_qw_24_avg: {
+			'type': 'json',
+			'color': 'wendu',
 			'items': [
-				{'img':'./img/zdxdsd/20.jpg','time': '2013年12月20日06时'},
-				{'img':'./img/zdxdsd/21.jpg','time': '2013年12月21日06时'},
-				{'img':'./img/zdxdsd/22.jpg','time': '2013年12月22日06时'},
-				{'img':'./img/zdxdsd/23.jpg','time': '2013年12月23日06时'},
-				{'img':'./img/zdxdsd/24.jpg','time': '2013年12月24日06时'}
+				{'src':'./data/sk_qw_24_avg/140101.000.json','text': '2014年01月01日'},
+				{'src':'./data/sk_qw_24_avg/140102.000.json','text': '2014年01月02日'},
+				{'src':'./data/sk_qw_24_avg/140103.000.json','text': '2014年01月03日'},
+				{'src':'./data/sk_qw_24_avg/140104.000.json','text': '2014年01月04日'},
+				{'src':'./data/sk_qw_24_avg/140105.000.json','text': '2014年01月05日'}
 			]
-		}
-		,
-		// 最小相对湿度
-		sd_2: {
-			'type': 'img',
-			'tuli': './img/tuli/shidu.jpg',
+		},
+		// 24小时变温实况
+		sk_qw_24_bw: {
+			'type': 'json',
+			'color': 'wendu',
 			'items': [
-				{'img':'./img/zxxdsd/20.jpg','time': '2013年12月20日06时'},
-				{'img':'./img/zxxdsd/21.jpg','time': '2013年12月21日06时'},
-				{'img':'./img/zxxdsd/22.jpg','time': '2013年12月22日06时'},
-				{'img':'./img/zxxdsd/23.jpg','time': '2013年12月23日06时'},
-				{'img':'./img/zxxdsd/24.jpg','time': '2013年12月24日06时'}
+				{'src':'./data/sk_qw_24_bw/14010602.000.json','text': '2014年01月06日02时'},
+				{'src':'./data/sk_qw_24_bw/14010605.000.json','text': '2014年01月06日05时'},
+				{'src':'./data/sk_qw_24_bw/14010608.000.json','text': '2014年01月06日08时'},
+				{'src':'./data/sk_qw_24_bw/14010611.000.json','text': '2014年01月06日11时'},
+				{'src':'./data/sk_qw_24_bw/14010614.000.json','text': '2014年01月06日14时'}
 			]
 		}
-		,
-		//空气污染扩散条件
-		wr_1: {
-			'type': 'img',
-			'tuli': './img/tuli/wuran.jpg',
+	});
+	// 风向风速实况
+	$.extend(DATA_CONF,{
+		// 逐小时风向风速实况
+		// sk_wind: {}
+		sk_wind: {
+			'type': 'json',
+			'fnname': 'parseWind',
+			'config':{
+				weatherStyle:{
+					sx: 3,
+					sy:0,
+					sWidth: 11,
+					sHeight: 13
+				}
+			},
 			'items': [
-				{'img':'./img/kqwr/20.jpg','time': '20日8时~21日8时'},
-				{'img':'./img/kqwr/21.jpg','time': '21日8时~22日8时'},
-				{'img':'./img/kqwr/22.jpg','time': '22日8时~23日8时'},
-				{'img':'./img/kqwr/23.jpg','time': '23日8时~24日8时'},
-				{'img':'./img/kqwr/24.jpg','time': '24日8时~25日8时'}
+				{'src':'./data/sk_wind/14010610.000.json','text': '2014年01月06日10时'},
+				{'src':'./data/sk_wind/14010611.000.json','text': '2014年01月06日11时'},
+				{'src':'./data/sk_wind/14010612.000.json','text': '2014年01月06日12时'},
+				{'src':'./data/sk_wind/14010613.000.json','text': '2014年01月06日13时'},
+				{'src':'./data/sk_wind/14010614.000.json','text': '2014年01月06日14时'}
 			]
 		}
-		,
-		// PM2.5实况
-		wr_2: {
-			'type': 'hightchart',
-			'fnname': 'pm2.5'
-		}
-		,
-		//高度场叠加云图
-		y_1: {
-			'type': 'img',
+	});
+	// 相对湿度实况
+	$.extend(DATA_CONF,{
+		// 相对湿度实况
+		sk_sd: {
+			'type': 'json',
+			'color': 'shidu',
 			'items': [
-				{'img':'./img/yun/22.jpg','time': '2013年12月22日08时'},
-				{'img':'./img/yun/23.jpg','time': '2013年12月23日08时'},
-				{'img':'./img/yun/24.jpg','time': '2013年12月24日08时'}
+				{'src':'./data/sk_sd/14010515.000.json','text': '2014年01月05日15时'},
+				{'src':'./data/sk_sd/14010518.000.json','text': '2014年01月05日18时'},
+				{'src':'./data/sk_sd/14010521.000.json','text': '2014年01月05日21时'},
+				{'src':'./data/sk_sd/14010600.000.json','text': '2014年01月06日00时'},
+				{'src':'./data/sk_sd/14010603.000.json','text': '2014年01月06日03时'}
 			]
 		}
-		,
-		//单站雷达
-		radar_1: {
+	});
+	//单站雷达
+	$.extend(DATA_CONF,{
+		sk_randar: {
 			'type': 'json',
 			'items': [
 				{'src':'./data/singleradar.json?aa'}
@@ -217,56 +229,99 @@
 						}
 					}
 				}
-		},
-		//雷达拼图产品 每个产品是一个外部链接形式产品
-		radar_2: {
+		}
+	});
+	//雷达拼图产品 每个产品是一个外部链接形式产品
+	$.extend(DATA_CONF,{
+		sk_randar_pt_china: {
 			'type':'weburl',
 			'name':'全国',
 			'url':'http://mobile.weather.com.cn/product/templates/templates_ImgPlay_main.html?dataFile=http://i.weather.com.cn/i/product/json/radarM/JC_RADAR_CHN_JB.html'
 		}
 		,
-		radar_3: {
+		sk_randar_pt_db: {
 			'type':'weburl',
 			'name':'东北',
 			'url':'http://mobile.weather.com.cn/product/templates/templates_ImgPlay_main.html?dataFile=http://i.weather.com.cn/i/product/json/radarM/JC_RADAR_DB_JB.html'
 		}
 		,
-		radar_4: {
+		sk_randar_pt_hb: {
 			'type':'weburl',
 			'name':'华北',
 			'url':'http://mobile.weather.com.cn/product/templates/templates_ImgPlay_main.html?dataFile=http://i.weather.com.cn/i/product/json/radarM/JC_RADAR_HB_JB.html'
 		}
 		,
-		radar_5: {
+		sk_randar_pt_hn: {
 			'type':'weburl',
 			'name':'华南',
 			'url':'http://mobile.weather.com.cn/product/templates/templates_ImgPlay_main.html?dataFile=http://i.weather.com.cn/i/product/json/radarM/JC_RADAR_HN_JB.html'
 		}
 		,
-		radar_6: {
+		sk_randar_pt_hz: {
 			'type':'weburl',
 			'name':'华中',
 			'url':'http://mobile.weather.com.cn/product/templates/templates_ImgPlay_main.html?dataFile=http://i.weather.com.cn/i/product/json/radarM/JC_RADAR_HZ_JB.html'
 		}
 		,
-		radar_7: {
+		sk_randar_pt_xb: {
 			'type':'weburl',
 			'name':'西北',
 			'url':'http://mobile.weather.com.cn/product/templates/templates_ImgPlay_main.html?dataFile=http://i.weather.com.cn/i/product/json/radarM/JC_RADAR_XB_JB.html'
 		}
 		,
-		radar_8: {
+		sk_randar_pt_xn: {
 			'type':'weburl',
 			'name':'西南',
 			'url':'http://mobile.weather.com.cn/product/templates/templates_ImgPlay_main.html?dataFile=http://i.weather.com.cn/i/product/json/radarM/JC_RADAR_XN_JB.html'
 		}
 		,
-		radar_9: {
+		sk_randar_pt_hd: {
 			'type':'weburl',
 			'name':'华东',
 			'url':'http://mobile.weather.com.cn/product/templates/templates_ImgPlay_main.html?dataFile=http://i.weather.com.cn/i/product/json/radarM/JC_RADAR_HD_JB.html'
 		}
-	}
+	});
+	// 卫星云图
+	$.extend(DATA_CONF,{
+		// FY-2卫星云图
+		sk_yt: {}
+	});
+	// 强对流天气监测
+	$.extend(DATA_CONF,{
+		// 短时强降水实时监测
+		sk_qdl_js: {},
+		// 大风实时监测
+		sk_qdl_df: {},
+		// 冰雹实时监测
+		sk_qdl_bb: {},
+		// 闪电实时监测
+		sk_qdl_sd: {},
+		// 雷暴实时监测
+		sk_qdl_lb: {}
+	});
+	// 天气图分析
+	$.extend(DATA_CONF,{
+		// 亚欧地面分析
+		sk_tqt_dm:  {
+			'type': 'img_json',
+			'url': 'http://data.weather.com.cn/cnweather/provdata/pmsc/cmadecision/jc_tqfx_dm.html'
+		},
+		// 亚欧高空分析500hPa
+		sk_tqt_500: {
+			'type': 'img_json',
+			'url': 'http://data.weather.com.cn/cnweather/provdata/pmsc/cmadecision/jc_tqfx_500hpa.html'
+		},
+		// 亚欧高空分析700hPa
+		sk_tqt_700: {
+			'type': 'img_json',
+			'url': 'http://data.weather.com.cn/cnweather/provdata/pmsc/cmadecision/jc_tqfx_700hpa.html'
+		},
+		// 亚欧高空分析850hPa
+		sk_tqt_850: {
+			'type': 'img_json',
+			'url': 'http://data.weather.com.cn/cnweather/provdata/pmsc/cmadecision/jc_tqfx_850hpa.html'
+		}
+	});
 	</script>
 </body>
 </html>

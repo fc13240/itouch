@@ -469,16 +469,36 @@ $(function() {
 		},
 		'radar': function(){
 			return '#f0f';
+		},
+		'shidu': function(val){
+			// return '#000';
+			val = parseFloat(val);
+			if(val >= 0 && val < 10){
+				return 'rgba(255,96,0,1)';
+			}else if(val >= 10 && val < 30){
+				return 'rgba(254,165,26,1)';
+			}else if(val >= 30 && val < 50){
+				return 'rgba(255,252,159,1)';
+			}else if(val >= 50){
+				return '#D6E6DA';
+			}
 		}
 	};
 	//初始化数据并绑定事件
 	(function(){
 		var initDataId = $('#sort_nav .init').data('id');
 		var $operator = $('#operator');
+		var header_title = $('.fix_layer:first h1');
+
 		var player;
 		var isInitMap = false;
 		var global_jsonid;
-		var init = function(data_id){console.log(isInitMap);
+		var init = function(data_id){
+			var clickTarget = $('li[data-id='+data_id+']');
+			if(clickTarget.length > 1){
+				clickTarget = clickTarget.filter(':not(.big)');
+			}
+			header_title.html(clickTarget.text());
 			if(player){
 				player.hide();
 				player = null;
@@ -486,12 +506,10 @@ $(function() {
 			var data = DATA_CONF[data_id];
 			var type = data.type;
 			var items = data.items;
-			var renderFn = function(){}
-			if(items){
-				var len = items.length;
-			}
-			var showText = function(toIndex){
-				var text = items[toIndex].time;
+			var renderFn;
+			/*显示提示文字*/
+			var showText = function(toIndex,itemsData){
+				var text = (itemsData || items)[toIndex].text;
 				player.showText(text||'');
 			}
 			/*清除map相关数据*/
@@ -505,17 +523,48 @@ $(function() {
 					global_jsonid = null;
 				}
 			}
-			if(type == 'img'){//渲染图片
-				clearMap();
-				renderFn = function(toIndex,nextFn){
+			/*根据数据得到一个渲染函数*/
+			var renderImg = function(img_items){
+				return function(toIndex,nextFn){
 					Loading.show();
 					$operator.html($('<img>').on('load',function(){
 						Loading.hide();
 						nextFn && nextFn();
-					}).attr('src',items[toIndex]['img']));
+					}).attr('src',img_items[toIndex]['src']));
 				}
-			}else if(type == 'json'){//渲染地图数据	
+			}
+			/*初始化播放器*/
+			var initPlayer = function(items_arr,renderFn,tuli){
+				var len = items_arr.length;
+				if(len > 1){
+					player = new Player(len,function(toIndex,nextFn){
+						renderFn(toIndex,nextFn);
+						showText(toIndex,items_arr);
+					},data.tuli);
+				}			
+				renderFn(0);//初始化第一个数据
+			}
+			if(type == 'img_json'){//外部图片列表文件
+				clearMap();
+				var url = data.url;
+				if(url){
+					Loading.show();
+					getJson(url,function(imgData){
+						Loading.hide();
+						renderFn = renderImg(imgData);
+						initPlayer(imgData,renderFn);
+					});
+				}
+				return;
+			}else if(type == 'img'){//渲染图片
+				clearMap();
+				renderFn = renderImg(items);
+			}else if(type == 'json'){//渲染地图数据
+				var conf = $.extend(true,{ 
+					container: 'operator'
+				},data.config);
 				var colorType = COLOR[data.color];
+				var parseFn = fnObj[data.fnname];
 				renderFn = function(toIndex,nextFn){
 					var fn = function(){
 						getJson(items[toIndex]['src'],function(pointData){
@@ -524,7 +573,9 @@ $(function() {
 									v.properties.color = colorType(v.properties.value);
 								});
 							}
-							
+							if($.isFunction(parseFn)){
+								pointData = parseFn(pointData);
+							}
 				 			gm.loadWeather(pointData,global_jsonid);
 							gm.refresh();
 							Loading.hide();
@@ -534,11 +585,10 @@ $(function() {
 					Loading.show();
 					if(!isInitMap){
 						require(['GeoMap'],function(GeoMap) {
-							var conf = $.extend(true,{ 
-								container: 'operator'
-							},data.config);
 							gm = GeoMap.init(conf);
 							getJson('./data/map/china.geo.json',function(mapData){
+								isInitMap = true;
+								fn();
 								gm.load(mapData);
 					 			gm.render();
 					 			gm.zr.on("click",function(e){
@@ -573,11 +623,9 @@ $(function() {
 								 	}
 								 });
 							});
-							isInitMap = true;
-							fn();
 						});
 					}else{
-						gm.updateCfg(data.config,true);
+						gm.updateCfg(conf,true);
 						fn();
 					}
 				}
@@ -586,19 +634,15 @@ $(function() {
 				var fn = data.fnname;
 				fn = fnObj[fn];
 				fn && fn();
+				return;
 			}else if (type == 'weburl'){
 				window.location.href='wisp://pUrl.wi?url='+data.url;
+				return;
 			}
-
-			if(len > 1){
-				player = new Player(len,function(toIndex,nextFn){
-					renderFn(toIndex,nextFn);
-					showText(toIndex);
-				},data.tuli);
-			}			
-			renderFn(0);//初始化第一个数据
+			if(renderFn){
+				initPlayer(items,renderFn);
+			}
 		}
-		init(initDataId);
 		var draw_highChart = function(id, title, subtitle, city_names, aqi_data, color, chart_width) {
 			$(id).highcharts({
 				colors: [color, "#7798BF", "#55BF3B", "#DF5353", "#aaeeee", "#ff0066", "#eeaaee",
@@ -677,9 +721,32 @@ $(function() {
 		var fnObj = {
 			'pm2.5': function(){
 				draw_highChart("#operator", "全国实时空气质量指数(AQI) 后十名", "", ["西安", "渭南", "咸阳", "宝鸡", "哈尔滨", "菏泽", "济宁", "徐州", "枣庄", "沈阳"], [441, 365, 341, 340, 303, 269, 255, 248, 247, 245], "#B98A00");
+			},
+			'parseWind': function(data){
+				$.each(data.features,function(i,v){
+					var speed = v.properties.speed;
+					var imgName = '';
+					if(speed >= 1 && speed <=2){
+						imgName = '1_2';
+					}else if(speed >= 3 && speed <=4){
+						imgName = '3_4';
+					}else if(speed >= 5 && speed <=6){
+						imgName = '5_6';
+					}else if(speed >= 7 && speed <=8){
+						imgName = '7_8';
+					}else if(speed >8){
+						imgName = '8_';
+					}
+					if(!imgName){
+						console.log(v);
+					}
+					v.properties.image = './img/wind_icon/'+imgName+'.gif';
+					v.properties.width = 11;
+					v.properties.height = 13;
+				});
+				return data;
 			}
 		}
-		var header_title = $('.fix_layer:first h1');
 		/*左侧导航点击事件*/
 		var $sort_nav = $('#sort_nav ul').click(function(e){
 			var target = $(e.target);
@@ -688,10 +755,11 @@ $(function() {
 				var data_id = target.data('id');
 				if(data_id){
 					init(data_id);
-					header_title.html(target.text());
 				}
 			}
 		}).on('SwipeLeft', hide_nav);
 		TouchEvent($sort_nav);
+
+		init(initDataId);
 	})();
 })
