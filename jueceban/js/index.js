@@ -221,6 +221,12 @@
 	 src_cache = {};
 	var anonymity;
 	var isSafari = $.browser.safari;
+	function getScriptAbsoluteSrc(node) {
+	  return node.hasAttribute ? // non-IE6/7
+	      node.src :
+	    	// see http://msdn.microsoft.com/en-us/library/ms536429(VS.85).aspx
+	      node.getAttribute("src", 4)
+	}
 	global.getJson = function(url, callback) {
 		var val = cache[url];
 		if (val) {
@@ -229,19 +235,19 @@
 			var node = document.createElement('script');
 			if(isSafari){//safari使用onload事件得到匿名数据
 				node.onload = function() {
-					exec(this.src);
+					exec(getScriptAbsoluteSrc(this));
 					anonymity = null;
 				}
 			}
 			
-			node.src = url + '?2?!' + url;
+			node.src = url;
 			head.appendChild(node);
-			src_cache[url] = callback;
+			src_cache[getScriptAbsoluteSrc(node)] = callback;
 		}
 	}
 	/*执行回调*/
 	function exec(url,data){
-		url = url.split('?!')[1];
+		// url = url.split('?!')[1];
 		data = data || anonymity;
 		var callback = src_cache[url];
 		delete src_cache[url];
@@ -494,17 +500,11 @@ $(function() {
 		var player;
 		var isInitMap = false;
 		var global_jsonid;
-		var init = function(data_id){
-			var clickTarget = $('li[data-id='+data_id+']');
-			if(clickTarget.length > 1){
-				clickTarget = clickTarget.filter(':not(.big)');
+		window.initData = function(data,title){
+			if(title){
+				header_title.html(title);
 			}
-			header_title.html(clickTarget.text());
-			if(player){
-				player.hide();
-				player = null;
-			}
-			var data = DATA_CONF[data_id];
+			
 			var type = data.type;
 			var items = data.items;
 			var renderFn;
@@ -598,6 +598,10 @@ $(function() {
 					 				}
 								 	var target = e.target;
 								 	if(target){
+									 	/*暂时以此来区分单站雷达点击*/
+						 				if(target.pshapeId && target.pshapeId != target.id){
+						 					return;
+						 				}
 								 		var jsonid = target.id.replace('text','');
 								 		if(isNaN(jsonid)){
 									 		global_jsonid = jsonid;
@@ -643,6 +647,17 @@ $(function() {
 			if(renderFn){
 				initPlayer(items,renderFn);
 			}
+		}
+		var _init = function(data_id){
+			var clickTarget = $('li[data-id='+data_id+']');
+			if(clickTarget.length > 1){
+				clickTarget = clickTarget.filter(':not(.big)');
+			}
+			if(player){
+				player.hide();
+				player = null;
+			}
+			initData(DATA_CONF[data_id],clickTarget.text());
 		}
 		var draw_highChart = function(id, title, subtitle, city_names, aqi_data, color, chart_width) {
 			$(id).highcharts({
@@ -755,12 +770,12 @@ $(function() {
 				hide_nav();
 				var data_id = target.data('id');
 				if(data_id){
-					init(data_id);
+					_init(data_id);
 				}
 			}
 		}).on('SwipeLeft', hide_nav);
 		TouchEvent($sort_nav);
 
-		init(initDataId);
+		_init(initDataId);
 	})();
 })

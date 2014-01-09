@@ -1,13 +1,20 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
 <head>
 	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width,initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-	<title>实况</title>
-	<link type="text/css" rel="stylesheet" href="./css/index.css?1" />
-	<script type="text/javascript" src="./js/jquery-1.8.2.js"></script>
-	<script type="text/javascript" src="./js/esl.js?1"></script>
-	<script type="text/javascript" src="./js/index.js?21"></script>
+	<meta content="yes" name="apple-mobile-web-app-capable"/>
+	<meta content="yes" name="apple-touch-fullscreen"/>
+	<meta content="telephone=no" name="format-detection"/>
+	<meta content="black" name="apple-mobile-web-app-status-bar-style">
+	<title>预报</title>
+	<meta name="revisit-after"  content="1 days" />
+	<meta name="keywords" content="" />
+	<meta name="description" content="" />
+	<meta name="viewport" content="width=320,initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+	<link type="text/css" rel="stylesheet" media="screen" href="./css/index.css" />
+	<script src="./js/jquery-1.8.2.js"></script>
+	<script type="text/javascript" src="./js/esl.js"></script>
+	<script src="./js/index.js"></script>
 </head>
 <body>
 	<div id="main">
@@ -205,70 +212,79 @@
 		sk_randar: {
 			'type': 'json',
 			'items': [
-				{'src':'./data/singleradar.json?aa'}
+				{'src':'./data/singleradar.json'}
 			],
 			'color': 'radar',
 			'config':{
 					weatherStyle:{
-						onclick: function(event){
-							var url='wisp://pUrl.wi?url=http://mobile.weather.com.cn/product/templates/templates_ImgPlay_main.html?dataFile=http://i.weather.com.cn/i/product/json/radarM/p_'+event.target.id+'.html';
-							window.location.href=url;
-							return true;
+						r: 15,
+						onclick: function(e){
+							var id = e.target.id;
+							initData({
+								'type': 'img_json',
+								'url':'http://data.weather.com.cn/cnweather/provdata/pmsc/cmadecision/radar/jc_radar_'+id.toLowerCase()+'_jb.html'
+							},e.target.text);
 						}
 					}
 				}
 		}
 	});
-	//雷达拼图产品 每个产品是一个外部链接形式产品
+	(function(){
+		var getUrl = function(name){
+			return 'http://data.weather.com.cn/cnweather/provdata/pmsc/cmadecision/radar/jc_radar_'+name.toLowerCase()+'_jb.html';
+		}
+		//雷达拼图产品 每个产品是一个外部链接形式产品
 	$.extend(DATA_CONF,{
 		sk_randar_pt_china: {
-			'type':'weburl',
+			'type':'img_json',
 			'name':'全国',
-			'url':'http://mobile.weather.com.cn/product/templates/templates_ImgPlay_main.html?dataFile=http://i.weather.com.cn/i/product/json/radarM/JC_RADAR_CHN_JB.html'
+			'url':getUrl('CHN')
 		}
 		,
 		sk_randar_pt_db: {
-			'type':'weburl',
+			'type':'img_json',
 			'name':'东北',
-			'url':'http://mobile.weather.com.cn/product/templates/templates_ImgPlay_main.html?dataFile=http://i.weather.com.cn/i/product/json/radarM/JC_RADAR_DB_JB.html'
+			'url':getUrl('DB')
 		}
 		,
 		sk_randar_pt_hb: {
-			'type':'weburl',
+			'type':'img_json',
 			'name':'华北',
-			'url':'http://mobile.weather.com.cn/product/templates/templates_ImgPlay_main.html?dataFile=http://i.weather.com.cn/i/product/json/radarM/JC_RADAR_HB_JB.html'
+			'url':getUrl('HB')
 		}
 		,
 		sk_randar_pt_hn: {
-			'type':'weburl',
+			'type':'img_json',
 			'name':'华南',
-			'url':'http://mobile.weather.com.cn/product/templates/templates_ImgPlay_main.html?dataFile=http://i.weather.com.cn/i/product/json/radarM/JC_RADAR_HN_JB.html'
+			'url':getUrl('HN')
 		}
 		,
 		sk_randar_pt_hz: {
-			'type':'weburl',
+			'type':'img_json',
 			'name':'华中',
-			'url':'http://mobile.weather.com.cn/product/templates/templates_ImgPlay_main.html?dataFile=http://i.weather.com.cn/i/product/json/radarM/JC_RADAR_HZ_JB.html'
+			'url':getUrl('HZ')
 		}
 		,
 		sk_randar_pt_xb: {
-			'type':'weburl',
+			'type':'img_json',
 			'name':'西北',
-			'url':'http://mobile.weather.com.cn/product/templates/templates_ImgPlay_main.html?dataFile=http://i.weather.com.cn/i/product/json/radarM/JC_RADAR_XB_JB.html'
+			'url':getUrl('XB')
 		}
 		,
 		sk_randar_pt_xn: {
-			'type':'weburl',
+			'type':'img_json',
 			'name':'西南',
-			'url':'http://mobile.weather.com.cn/product/templates/templates_ImgPlay_main.html?dataFile=http://i.weather.com.cn/i/product/json/radarM/JC_RADAR_XN_JB.html'
+			'url':getUrl('XN')
 		}
 		,
 		sk_randar_pt_hd: {
-			'type':'weburl',
+			'type':'img_json',
 			'name':'华东',
-			'url':'http://mobile.weather.com.cn/product/templates/templates_ImgPlay_main.html?dataFile=http://i.weather.com.cn/i/product/json/radarM/JC_RADAR_HD_JB.html'
+			'url':getUrl('HD')
 		}
 	});
+	})();
+	
 	// 卫星云图
 	$.extend(DATA_CONF,{
 		// FY-2卫星云图
