@@ -1,32 +1,24 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta charset="utf-8" />
-	<meta content="yes" name="apple-mobile-web-app-capable"/>
-	<meta content="yes" name="apple-touch-fullscreen"/>
-	<meta content="telephone=no" name="format-detection"/>
-	<meta content="black" name="apple-mobile-web-app-status-bar-style">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 	<title>实况</title>
-	<meta name="revisit-after"  content="1 days" />
-	<meta name="keywords" content="" />
-	<meta name="description" content="" />
-	<meta name="viewport" content="width=320,initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
-	<link type="text/css" rel="stylesheet" media="screen" href="./css/index.css?1" />
-	<script src="./js/jquery-1.8.2.js"></script>
-	<!--<script src="./js/highcharts.js"></script>-->
+	<link type="text/css" rel="stylesheet" href="./css/index.css?1" />
+	<script type="text/javascript" src="./js/jquery-1.8.2.js"></script>
 	<script type="text/javascript" src="./js/esl.js?1"></script>
-	<script src="./js/index.js?21"></script>
+	<script type="text/javascript" src="./js/index.js?21"></script>
 </head>
 <body>
 	<div id="main">
-		<nav id="sort_nav">
+		<div id="sort_nav">
 			<ul>
 				<li data-id="sk_js" class="big">降水实况</li>
-				<li data-id="sk_js" class="init">逐小时降水实况</li>
+				<li data-id="sk_js">逐小时降水实况</li>
 				<li data-id="sk_js_24">24小时降水实况</li>
 
 				<li data-id="sk_qw" class="big">气温实况</li>
-				<li data-id="sk_qw">逐小时气温实况</li>
+				<li data-id="sk_qw" class="init">逐小时气温实况</li>
 				<li data-id="sk_qw_24_max">24小时最高温实况</li>
 				<li data-id="sk_qw_24_min">24小时最低温实况</li>
 				<li data-id="sk_qw_24_avg">24小时平均气温实况</li>
@@ -65,7 +57,7 @@
 				<li data-id="sk_tqt_700">亚欧高空分析700hPa</li>
 				<li data-id="sk_tqt_850">亚欧高空分析850hPa</li>
 			</ul>
-		</nav>
+		</div>
 		<div id="main_container">
 			<div class="fix_layer top_layer">
 				<div class="btn_nav">
