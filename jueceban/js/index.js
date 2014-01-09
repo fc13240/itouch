@@ -295,6 +295,7 @@
 // 	result = $('<div style="position:fixed;z-index:101;left:10px;top:100px;width:300px;height:100px;background:rgba(100,100,100,0.3);"></div>').appendTo($('body'));
 // });
 $(function() {
+	var gm;//定义GeoMap对象
 	var win = $(window);
 	var w = win.width();
 	var h = win.height();
@@ -382,7 +383,7 @@ $(function() {
 		if(scale == 1){
 			return;
 		}
-		scale_total = 1;//此bug引起第一次初始化图片后缩放问题
+		scale_total = 1;
 		var oldWidth = data.width;
 		var oldHeight = data.height;
 		var newWidth = oldWidth * scale;
@@ -724,7 +725,8 @@ $(function() {
 			},
 			'parseWind': function(data){
 				$.each(data.features,function(i,v){
-					var speed = v.properties.speed;
+					var properties = v.properties;
+					var speed = properties.speed;
 					var imgName = '';
 					if(speed >= 1 && speed <=2){
 						imgName = '1_2';
@@ -737,12 +739,11 @@ $(function() {
 					}else if(speed >8){
 						imgName = '8_';
 					}
-					if(!imgName){
-						console.log(v);
-					}
-					v.properties.image = './img/wind_icon/'+imgName+'.gif';
-					v.properties.width = 11;
-					v.properties.height = 13;
+					
+					properties.rotation = -properties.rotation;//画图为逆时针画，而风数据里为顺时针
+					properties.image = './img/wind_icon/'+imgName+'.gif';
+					properties.width = 11;
+					properties.height = 13;
 				});
 				return data;
 			}
