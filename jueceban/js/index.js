@@ -500,6 +500,7 @@ $(function() {
 		var player;
 		var isInitMap = false;
 		var global_jsonid;
+		/*对外提供可调用的接口*/
 		window.initData = function(data,title){
 			if(title){
 				header_title.html(title);
