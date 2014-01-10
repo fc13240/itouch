@@ -399,30 +399,30 @@ define("GeoMap",["zrender","zrender/tool/util"],
 				}else if (shapeType == 'PointCircle'){
 					var shapeObj={
 							shape : 'circle',
-							id : shape.properties.id,
+							id : shape.properties.id||obj.zr.newShapeId('weatherShape'),
 							style : {
 								x:polygonList[0],
 								y:polygonList[1]
 							}
 					 };
-
 					 if (obj.config.showName)shapeObj.style.text=shape.properties.text;
 					 if (shape.properties.color !== undefined ){
 						 shapeObj.style.color=shape.properties.color;
+					 }
+					 if (shape.properties.title !== undefined ){
+						 shapeObj.style.title=shape.properties.title;
 					 }
 					 if (shape.properties.prov_name !== undefined ){
 						 shapeObj.pshapeId=shape.properties.prov_name;
 					 }
 					 seft.pathArray.push(shapeObj);
 				}else if (shapeType == 'PointImage'){
-
-					var imgHeight = parseFloat(shape.properties.height);
 					var shapeObj={
 							shape : 'image',
-							//id : shape.properties.id,
+							id : shape.properties.id||obj.zr.newShapeId('weatherShape'),
 							style : {
 								x:polygonList[0],
-								y:polygonList[1] - imgHeight
+								y:polygonList[1]
 							}
 					 };
 					 util.mergeFast(shapeObj.style, shape.properties,false,true); 
@@ -433,13 +433,8 @@ define("GeoMap",["zrender","zrender/tool/util"],
 						 shapeObj.rotation =  new Array();
 						 shapeObj.rotation[0]=shape.properties.rotation/180*Math.PI;
 						 shapeObj.rotation[1]= parseFloat(polygonList[0]);
-						 shapeObj.rotation[2]= parseFloat(shapeObj.style.y+ imgHeight);
+						 shapeObj.rotation[2]= parseFloat(polygonList[1]+ parseInt(shapeObj.style.height));
 						 //现所有旋转统一从文件左下角进行。
-					 }
-					 if (!shapeObj.id)
-					 {
-						var newShapeid = obj.zr.newShapeId('weatherShape');
-						shapeObj.id=newShapeid;
 					 }
 					 geomap.log(shapeObj);
 					 seft.pathArray.push(shapeObj);
