@@ -313,7 +313,71 @@
 		}
 	}
 })(this);
+// !function(global){
+// 	var STATE = 'x-back';
+//     // var element;
+//     var _listener;
+// 	var onPopState = function(event){
+//         event.state === STATE && fire();
+//         return true;
+//     }
+//     var fire = function(){
+// 	    _listener && _listener();
+//         history.go(-1);
+//     }
+// 	global.Back = {
+// 		'bind': function(listener){
+// 			_listener = listener;console.log(_listener);
+// 			// element = document.createElement('span');
+// 			// element.addEventListener(STATE, _listener, false);
+// 			window.addEventListener('popstate', onPopState);
+// 			history.pushState(STATE, null, location.href);
+// 		},
+// 		'off': function(){
+// 			// element.removeEventListener(STATE, _listener, false);
+// 			window.removeEventListener('popstate', onPopState);
+// 		}
+// 	}
+// 	global.Back.bind(function(){console.log('back');
+// 		// alert('back');
+// 	});
+// }(this);
+(function(){
+	;!function(pkg, undefined){
+        var STATE = 'x-back';
+        var element;
 
+        var onPopState = function(event){
+                event.state === STATE && fire();
+        }
+
+        var record = function(state){
+                history.pushState(state, null, location.href);
+        }
+
+        var fire = function(){
+                var event = document.createEvent('Events');
+                event.initEvent(STATE, false, false);
+                element.dispatchEvent(event);
+        }
+
+        var listen = function(listener){
+                element.addEventListener(STATE, listener, false);
+        }
+
+        !function(){
+                element = document.createElement('span');
+                window.addEventListener('popstate', onPopState);
+                this.listen = listen;
+                record(STATE);
+        }.call(window[pkg] = window[pkg] || {});
+
+	}('XBack');
+	XBack.listen(function(){
+	    alert('oh! you press the back button');
+	});
+
+})();
 
 // $(function(){
 // 	result = $('<div style="position:fixed;z-index:101;left:10px;top:100px;width:300px;height:100px;background:rgba(100,100,100,0.3);"></div>').appendTo($('body'));
@@ -433,7 +497,7 @@ $(function() {
 	
 	var lastScale = 1;
 	$body.on('Scale', function(e, d) {
-		isChanging = true;
+		isScaling = true;
 		var scale = d.scale * data.scale;
 		
 		var toWidth = scale * data.width;
@@ -448,10 +512,9 @@ $(function() {
 
 	})
 	.on('ScaleEnd', function(e, d) {
-		if(!isChanging){
+		if(!isScaling){
 			return;
 		}
-		isChanging = false;
 		var scale = lastScale * data.scale;
 		var w = data.width;
 		var toWidth = scale * w;
@@ -464,9 +527,18 @@ $(function() {
 			data.scale = scale;
 			// resetScale(scale,3);
 		}
+		isScaling = false;
+	})
+	win.scroll(function(){
+		isScrolling = true;
+		clearTimeout(scrollTT);
+		scrollTT = setTimeout(function(){
+			isScrolling = false;console.log(isScrolling);
+		},10);
 	});
-	var isChanging = false;
-	
+	var isScaling = false;
+	var isScrolling = false;
+	var scrollTT;
 
 	require.config({
         paths:{
@@ -616,39 +688,42 @@ $(function() {
 								gm.load(mapData);
 					 			gm.render();
 					 			gm.zr.on("click",function(e){
-					 				if(global_jsonid || isChanging){//防止多次点击
-					 					return;
-					 				}
-								 	var target = e.target;
-								 	if(target){
-									 	/*暂时以此来区分单站雷达点击*/
-						 				if(target.pshapeId && target.pshapeId != target.id){
+					 				// 防止在进行缩放或拖动时误操作
+					 				setTimeout(function(){
+					 					if(global_jsonid || isScaling || isScrolling){//防止多次点击
 						 					return;
 						 				}
-								 		var jsonid = target.id.replace('text','');
-								 		if(isNaN(jsonid)){
-									 		global_jsonid = jsonid;
-								 			getJson('./data/map/'+jsonid+'.geo.json',function(json){
-								 				resetToOldOffset(function(){
-								 					var $n_back = $('#n_back').show();
-								 					gm.clear();
-													gm.load(json,{showName:true});
-													gm.refreshWeather(jsonid);
-													var back = function(){
-														$n_back.remove();//删除提示
-														resetToOldOffset(function(){
-															global_jsonid = null;
-									 						gm.clear();
-															gm.load(mapData,{showName:false});
-															gm.refreshWeather();
-															$btn_back.remove();
-									 					});
-													}
-													var $btn_back = $('<div id="btn_back">返回</div>').appendTo($top_layer).click(back);
-								 				});
-									 		})
-								 		}
-								 	}
+									 	var target = e.target;
+									 	if(target){
+										 	/*暂时以此来区分单站雷达点击*/
+							 				if(target.pshapeId && target.pshapeId != target.id){
+							 					return;
+							 				}
+									 		var jsonid = target.id.replace('text','');
+									 		if(isNaN(jsonid)){
+										 		global_jsonid = jsonid;
+									 			getJson('./data/map/'+jsonid+'.geo.json',function(json){
+									 				resetToOldOffset(function(){
+									 					var $n_back = $('#n_back').show();
+									 					gm.clear();
+														gm.load(json,{showName:true});
+														gm.refreshWeather(jsonid);
+														var back = function(){
+															$n_back.remove();//删除提示
+															resetToOldOffset(function(){
+																global_jsonid = null;
+										 						gm.clear();
+																gm.load(mapData,{showName:false});
+																gm.refreshWeather();
+																$btn_back.remove();
+										 					});
+														}
+														var $btn_back = $('<div id="btn_back">返回</div>').appendTo($top_layer).click(back);
+									 				});
+										 		})
+									 		}
+									 	}
+					 				},20);
 								 });
 							});
 						});
