@@ -313,72 +313,18 @@
 		}
 	}
 })(this);
-// !function(global){
-// 	var STATE = 'x-back';
-//     // var element;
-//     var _listener;
-// 	var onPopState = function(event){
-//         event.state === STATE && fire();
-//         return true;
-//     }
-//     var fire = function(){
-// 	    _listener && _listener();
-//         history.go(-1);
-//     }
-// 	global.Back = {
-// 		'bind': function(listener){
-// 			_listener = listener;console.log(_listener);
-// 			// element = document.createElement('span');
-// 			// element.addEventListener(STATE, _listener, false);
-// 			window.addEventListener('popstate', onPopState);
-// 			history.pushState(STATE, null, location.href);
-// 		},
-// 		'off': function(){
-// 			// element.removeEventListener(STATE, _listener, false);
-// 			window.removeEventListener('popstate', onPopState);
-// 		}
-// 	}
-// 	global.Back.bind(function(){console.log('back');
-// 		// alert('back');
-// 	});
-// }(this);
-(function(){
-	;!function(pkg, undefined){
-        var STATE = 'x-back';
-        var element;
-
-        var onPopState = function(event){
-                event.state === STATE && fire();
-        }
-
-        var record = function(state){
-                history.pushState(state, null, location.href);
-        }
-
-        var fire = function(){
-                var event = document.createEvent('Events');
-                event.initEvent(STATE, false, false);
-                element.dispatchEvent(event);
-        }
-
-        var listen = function(listener){
-                element.addEventListener(STATE, listener, false);
-        }
-
-        !function(){
-                element = document.createElement('span');
-                window.addEventListener('popstate', onPopState);
-                this.listen = listen;
-                record(STATE);
-        }.call(window[pkg] = window[pkg] || {});
-
-	}('XBack');
-	XBack.listen(function(){
-	    alert('oh! you press the back button');
-	});
-
-})();
-
+/*android和js交互*/
+(function(global){
+	global.onBack = function(){
+		$('#btn_back').click();
+	}
+	global.setState = new Function();
+	if(window.demo){
+		global.setState = function(flag){
+			window.demo[flag?'setCanBack':'setNoBack']();
+		}
+	}
+})(this);
 // $(function(){
 // 	result = $('<div style="position:fixed;z-index:101;left:10px;top:100px;width:300px;height:100px;background:rgba(100,100,100,0.3);"></div>').appendTo($('body'));
 // });
@@ -613,6 +559,7 @@ $(function() {
 				$operator.html('');
 				$('#n_back').remove();
 				$('#btn_back').remove();
+				setState(true);
 				if(isInitMap && gm){
 					gm.zr.clear();
 					isInitMap = false;
@@ -709,6 +656,7 @@ $(function() {
 														gm.load(json,{showName:true});
 														gm.refreshWeather(jsonid);
 														var back = function(){
+															setState(true);
 															$n_back.remove();//删除提示
 															resetToOldOffset(function(){
 																global_jsonid = null;
@@ -719,6 +667,7 @@ $(function() {
 										 					});
 														}
 														var $btn_back = $('<div id="btn_back">返回</div>').appendTo($top_layer).click(back);
+														setState(false);
 									 				});
 										 		})
 									 		}
