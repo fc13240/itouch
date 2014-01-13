@@ -34,7 +34,7 @@
 				
 				<li data-id="yb_qw_max" class="big">气温预报</li>
 				<li data-id="yb_qw_max">24小时高温预报</li>
-				<li data-id="yb_qw_min">24小时低温预报 【*】</li>
+				<li data-id="yb_qw_min">24小时低温预报</li>
 
 				<!-- <li data-id="yb_gw_48" class="big">1-3天高温预报</li>
 				<li data-id="yb_gw_24">24小时高温</li>
@@ -54,10 +54,10 @@
 				<li data-id="yb_zy_jt">交通气象</li>
 				<li data-id="yb_zy_dz">地质灾害</li>
 				<li data-id="yb_zy_hx">森林草原火险 【*】</li>
-				<li data-id="yb_zy_wrtj">空气污染气象条件预报 【*】</li>
+				<li data-id="yb_zy_wrtj">空气污染气象条件预报</li>
 
 				<li data-id="yb_sz_js_24" class="big">数值预报(GRAPES_MESO) 【*】</li>
-				<li data-id="yb_sz_js_24">24小时降水预报 【*】</li>
+				<li data-id="yb_sz_js_24">24小时降水预报</li>
 				<li data-id="yb_sz_wd_max">24小时2米最高温 【*】</li>
 				<li data-id="yb_sz_wd_min">24小时2米最低温 【*】</li>
 			</ul>
@@ -107,7 +107,10 @@
 			'url': 'http://data.weather.com.cn/cnweather/provdata/pmsc/cmadecision/yb_wd_gw.html'
 		},
 		// 24小时低温预报
-		yb_qw_min: {}
+		yb_qw_min: {
+			'type': 'img_json',
+			'url': 'http://data.weather.com.cn/cnweather/provdata/pmsc/cmadecision/yb_wd_zd24.html'
+		}
 	});
 	// // 1-3天气温预报
 	// $.extend(DATA_CONF,{
@@ -181,13 +184,19 @@
 		// 森林草原火险
 		yb_zy_hx: {},
 		// 空气污染气象条件预报
-		yb_zy_wrtj: {}
+		yb_zy_wrtj: {
+			'type': 'img_json',
+			'url': 'http://data.weather.com.cn/cnweather/provdata/pmsc/cmadecision/yb_kqwr_24.html'
+		}
 	});
 
 	// 数值预报(CRAPES_MESO)
 	$.extend(DATA_CONF,{
 		// 24小时降水预报
-		yb_sz_js_24: {},
+		yb_sz_js_24: {
+			'type': 'img_json',
+			'url': 'http://data.weather.com.cn/cnweather/provdata/pmsc/cmadecision/sz_meso_12h_ljjs_24.html'
+		},
 		// 24小时2米最高温
 		yb_sz_wd_max: {},
 		// 24小时2米最低温

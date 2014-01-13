@@ -260,6 +260,7 @@ body.off .fix_layer{
 	position: absolute;
 	top: -40px;
 	height: 25px;
+	line-height: 25px;
 	color: rgba(0,0,0,0.6);
 }
 .time i{

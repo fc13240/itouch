@@ -177,6 +177,7 @@
 		this.stop();
 		this.playerHTML.remove();
 	}
+	var relativeWidth;//时间提示参考最外层容器的宽度
 	prop.showText = function(text){
 		var self = this;
 		var $html = self.playerHTML;
@@ -186,8 +187,25 @@
 		}
 		if(text){
 			try{
+				var toItem = $html.find('span.on').last();
+				var toItemLeft = toItem.position().left;
+				var toItemW = toItem.width();
+				var timeW = $time.width();
+				var toLeft = toItemLeft - (timeW - toItemW)/2;
+				var sorrowLeft = timeW / 2 - 10;
+				if(!relativeWidth){
+					relativeWidth = $html.find('.progress').width();
+				}
+				if(toLeft + timeW > relativeWidth){
+					var fixedLeft = relativeWidth - timeW;
+					sorrowLeft += toLeft - fixedLeft;
+					toLeft = fixedLeft;
+				}
+				$time.find('div').css({
+					left: sorrowLeft
+				});
 				$time.css({
-					left: $html.find('span.on').last().position().left - 100/self.tIndex
+					left:  toLeft
 				}).show().find('i').text(text);
 			}catch(e){}
 		}else{
