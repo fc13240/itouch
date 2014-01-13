@@ -186,12 +186,17 @@ body.off .fix_layer{
 }
 
 .btn_nav{
+	width: 40px;
+	height: 40px;
+	position: absolute;
+	left: 0;
+	top: 0;
+	padding: 10px 0 0 10px;
+}
+.btn_nav > div{
 	border: 1px solid #eee;
 	border-radius: 3px;
 	width: 15px;
-	position: absolute;
-	left: 15px;
-	top: 10px;
 	padding: 0 3px;
 }
 .btn_nav span{
@@ -331,9 +336,9 @@ body.off .fix_layer{
 	top: -9px;
 }
 #n_menu{
-	top: 30px;
+	top: 40px;
 	width: 100px;
-	left: -10px;
+	left: 0px;
 }
 #n_play{
 	width: 100px;

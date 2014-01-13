@@ -6,7 +6,7 @@
 	<meta content="yes" name="apple-touch-fullscreen"/>
 	<meta content="telephone=no" name="format-detection"/>
 	<meta content="black" name="apple-mobile-web-app-status-bar-style">
-	<title>预报</title>
+	<title>实况</title>
 	<meta name="revisit-after"  content="1 days" />
 	<meta name="keywords" content="" />
 	<meta name="description" content="" />
@@ -48,32 +48,40 @@
 				<li data-id="sk_randar_pt_xn">西南</li>
 				<li data-id="sk_randar_pt_hd">华东</li>
 
-				<li data-id="sk_yt" class="big">卫星云图 【*】</li>
-				<li data-id="sk_yt">FY-2卫星云图 【*】</li>
+				<li data-id="sk_yt" class="big">卫星云图</li>
+				<li data-id="sk_yt">大陆区域彩色云图</li>
 
-				<li class="big" data-id="sk_qdl_js">强对流天气监测 【*】</li>
+				<!-- <li class="big" data-id="sk_qdl_js">强对流天气监测 【*】</li>
 				<li data-id="sk_qdl_js">短时强降水实时监测 【*】</li>
 				<li data-id="sk_qdl_df">大风实时监测 【*】</li>
 				<li data-id="sk_qdl_bb">冰雹实时监测 【*】</li>
 				<li data-id="sk_qdl_sd">闪电实时监测 【*】</li>
-				<li data-id="sk_qdl_lb">雷暴实时监测 【*】</li>
+				<li data-id="sk_qdl_lb">雷暴实时监测 【*】</li> -->
+
+				<li class="big" data-id="sk_jc_pm10">实况监测 【*】</li>
+				<li data-id="sk_jc_pm10">PM10监测 【*】</li>
+				<li data-id="sk_jc_pm2d5">PM2.5监测 【*】</li>
+				<li data-id="sk_jc_m">霾监测 【*】</li>
 
 				<li class="big" data-id="sk_tqt_dm">天气图分析</li>
 				<li data-id="sk_tqt_dm">亚欧地面分析</li>
 				<li data-id="sk_tqt_500">亚欧高空分析500hPa</li>
 				<li data-id="sk_tqt_700">亚欧高空分析700hPa</li>
 				<li data-id="sk_tqt_850">亚欧高空分析850hPa</li>
+				<li data-id="sk_tqt_qyc">地面气压场</li>
 			</ul>
 		</div>
 		<div id="main_container">
 			<div class="fix_layer top_layer">
 				<div class="btn_nav">
-					<span></span>
-					<span></span>
-					<span></span>
-					<div class="notice" id="n_menu"><i>点击这里查看所有分类</i><div><div></div></div></div>
+					<div>
+						<span></span>
+						<span></span>
+						<span></span>
+						<div class="notice" id="n_menu"><i>点击这里查看所有分类</i><div><div></div></div></div>
+					</div>
 				</div>
-				<h1>05点24小时变温</h1>
+				<h1>05时24小时变温</h1>
 				<div class="notice" id="n_back"><i>点击返回全国地图</i><div><div></div></div></div>
 			</div>
 			<div id="operator"></div>
@@ -88,20 +96,22 @@
 		sk_js: {
 			'type': 'json',
 			'color': 'jiangshui',
+			'unit': 'mm',
 			'items': [
-				{'src':'./data/sk_js/14010610.000.json','text': '01月06日10点'},
-				{'src':'./data/sk_js/14010611.000.json','text': '01月06日11点'},
-				{'src':'./data/sk_js/14010612.000.json','text': '01月06日12点'},
-				{'src':'./data/sk_js/14010613.000.json','text': '01月06日13点'},
-				{'src':'./data/sk_js/14010614.000.json','text': '01月06日14点'}
+				{'src':'./data/sk_js/14010610.000.json','text': '1月6日10时'},
+				{'src':'./data/sk_js/14010611.000.json','text': '1月6日11时'},
+				{'src':'./data/sk_js/14010612.000.json','text': '1月6日12时'},
+				{'src':'./data/sk_js/14010613.000.json','text': '1月6日13时'},
+				{'src':'./data/sk_js/14010614.000.json','text': '1月6日14时'}
 			]
 		},
 		//24小时降水实况
 		sk_js_24: {
 			'type': 'json',
 			'color': 'jiangshui',
+			'unit': 'mm',
 			'items': [
-				{'src':'./data/sk_js_24/14010408.000.json','text': '01月04日08点'}
+				{'src':'./data/sk_js_24/14010408.000.json','text': '1月4日8时'}
 			]
 		}
 	});
@@ -111,60 +121,65 @@
 		sk_qw: {
 			'type': 'json',
 			'color': 'wendu',
+			'unit': '℃',
 			'items': [
-				{'src':'./data/sk_qw/14010610.000.json','text': '01月06日10点'},
-				{'src':'./data/sk_qw/14010611.000.json','text': '01月06日11点'},
-				{'src':'./data/sk_qw/14010612.000.json','text': '01月06日12点'},
-				{'src':'./data/sk_qw/14010613.000.json','text': '01月06日13点'},
-				{'src':'./data/sk_qw/14010614.000.json','text': '01月06日14点'}
+				{'src':'./data/sk_qw/14010610.000.json','text': '1月6日10时'},
+				{'src':'./data/sk_qw/14010611.000.json','text': '1月6日11时'},
+				{'src':'./data/sk_qw/14010612.000.json','text': '1月6日12时'},
+				{'src':'./data/sk_qw/14010613.000.json','text': '1月6日13时'},
+				{'src':'./data/sk_qw/14010614.000.json','text': '1月6日14时'}
 			]
 		},
 		// 24小时最高温实况
 		sk_qw_24_max: {
 			'type': 'json',
 			'color': 'wendu',
+			'unit': '℃',
 			'items': [
-				{'src':'./data/sk_qw_24_max/14010202.000.json','text': '01月02日02时'},
-				{'src':'./data/sk_qw_24_max/14010302.000.json','text': '01月02日03时'},
-				{'src':'./data/sk_qw_24_max/14010402.000.json','text': '01月02日04时'},
-				{'src':'./data/sk_qw_24_max/14010502.000.json','text': '01月02日05时'},
-				{'src':'./data/sk_qw_24_max/14010602.000.json','text': '01月02日06时'}
+				{'src':'./data/sk_qw_24_max/14010202.000.json','text': '1月2日2时'},
+				{'src':'./data/sk_qw_24_max/14010302.000.json','text': '1月2日3时'},
+				{'src':'./data/sk_qw_24_max/14010402.000.json','text': '1月2日4时'},
+				{'src':'./data/sk_qw_24_max/14010502.000.json','text': '1月2日5时'},
+				{'src':'./data/sk_qw_24_max/14010602.000.json','text': '1月2日6时'}
 			]
 		},
 		// 24小时最低温实况
 		sk_qw_24_min: {
 			'type': 'json',
 			'color': 'wendu',
+			'unit': '℃',
 			'items': [
-				{'src':'./data/sk_qw_24_min/14010214.000.json','text': '01月02日14时'},
-				{'src':'./data/sk_qw_24_min/14010314.000.json','text': '01月03日14时'},
-				{'src':'./data/sk_qw_24_min/14010414.000.json','text': '01月04日14时'},
-				{'src':'./data/sk_qw_24_min/14010514.000.json','text': '01月05日14时'},
-				{'src':'./data/sk_qw_24_min/14010614.000.json','text': '01月06日14时'}
+				{'src':'./data/sk_qw_24_min/14010214.000.json','text': '1月2日14时'},
+				{'src':'./data/sk_qw_24_min/14010314.000.json','text': '1月3日14时'},
+				{'src':'./data/sk_qw_24_min/14010414.000.json','text': '1月4日14时'},
+				{'src':'./data/sk_qw_24_min/14010514.000.json','text': '1月5日14时'},
+				{'src':'./data/sk_qw_24_min/14010614.000.json','text': '1月6日14时'}
 			]
 		},
 		// 24小时平均气温实况
 		sk_qw_24_avg: {
 			'type': 'json',
 			'color': 'wendu',
+			'unit': '℃',
 			'items': [
-				{'src':'./data/sk_qw_24_avg/140101.000.json','text': '01月01日'},
-				{'src':'./data/sk_qw_24_avg/140102.000.json','text': '01月02日'},
-				{'src':'./data/sk_qw_24_avg/140103.000.json','text': '01月03日'},
-				{'src':'./data/sk_qw_24_avg/140104.000.json','text': '01月04日'},
-				{'src':'./data/sk_qw_24_avg/140105.000.json','text': '01月05日'}
+				{'src':'./data/sk_qw_24_avg/140101.000.json','text': '1月1日'},
+				{'src':'./data/sk_qw_24_avg/140102.000.json','text': '1月2日'},
+				{'src':'./data/sk_qw_24_avg/140103.000.json','text': '1月3日'},
+				{'src':'./data/sk_qw_24_avg/140104.000.json','text': '1月4日'},
+				{'src':'./data/sk_qw_24_avg/140105.000.json','text': '1月5日'}
 			]
 		},
 		// 24小时变温实况
 		sk_qw_24_bw: {
 			'type': 'json',
 			'color': 'wendu',
+			'unit': '℃',
 			'items': [
-				{'src':'./data/sk_qw_24_bw/14010602.000.json','text': '01月06日02时'},
-				{'src':'./data/sk_qw_24_bw/14010605.000.json','text': '01月06日05时'},
-				{'src':'./data/sk_qw_24_bw/14010608.000.json','text': '01月06日08时'},
-				{'src':'./data/sk_qw_24_bw/14010611.000.json','text': '01月06日11时'},
-				{'src':'./data/sk_qw_24_bw/14010614.000.json','text': '01月06日14时'}
+				{'src':'./data/sk_qw_24_bw/14010602.000.json','text': '1月6日2时'},
+				{'src':'./data/sk_qw_24_bw/14010605.000.json','text': '1月6日5时'},
+				{'src':'./data/sk_qw_24_bw/14010608.000.json','text': '1月6日8时'},
+				{'src':'./data/sk_qw_24_bw/14010611.000.json','text': '1月6日11时'},
+				{'src':'./data/sk_qw_24_bw/14010614.000.json','text': '1月6日14时'}
 			]
 		}
 	});
@@ -175,6 +190,7 @@
 		sk_wind: {
 			'type': 'json',
 			'fnname': 'parseWind',
+			'unit': '级',
 			'config':{
 				weatherStyle:{
 					sx: 3,
@@ -184,11 +200,11 @@
 				}
 			},
 			'items': [
-				{'src':'./data/sk_wind/14010610.000.json','text': '01月06日10时'},
-				{'src':'./data/sk_wind/14010611.000.json','text': '01月06日11时'},
-				{'src':'./data/sk_wind/14010612.000.json','text': '01月06日12时'},
-				{'src':'./data/sk_wind/14010613.000.json','text': '01月06日13时'},
-				{'src':'./data/sk_wind/14010614.000.json','text': '01月06日14时'}
+				{'src':'./data/sk_wind/14010610.000.json','text': '1月6日10时'},
+				{'src':'./data/sk_wind/14010611.000.json','text': '1月6日11时'},
+				{'src':'./data/sk_wind/14010612.000.json','text': '1月6日12时'},
+				{'src':'./data/sk_wind/14010613.000.json','text': '1月6日13时'},
+				{'src':'./data/sk_wind/14010614.000.json','text': '1月6日14时'}
 			]
 		}
 	});
@@ -198,12 +214,13 @@
 		sk_sd: {
 			'type': 'json',
 			'color': 'shidu',
+			'unit': '%',
 			'items': [
-				{'src':'./data/sk_sd/14010515.000.json','text': '01月05日15时'},
-				{'src':'./data/sk_sd/14010518.000.json','text': '01月05日18时'},
-				{'src':'./data/sk_sd/14010521.000.json','text': '01月05日21时'},
-				{'src':'./data/sk_sd/14010600.000.json','text': '01月06日00时'},
-				{'src':'./data/sk_sd/14010603.000.json','text': '01月06日03时'}
+				{'src':'./data/sk_sd/14010515.000.json','text': '1月5日15时'},
+				{'src':'./data/sk_sd/14010518.000.json','text': '1月5日18时'},
+				{'src':'./data/sk_sd/14010521.000.json','text': '1月5日21时'},
+				{'src':'./data/sk_sd/14010600.000.json','text': '1月6日00时'},
+				{'src':'./data/sk_sd/14010603.000.json','text': '1月6日03时'}
 			]
 		}
 	});
@@ -234,74 +251,85 @@
 			return 'http://data.weather.com.cn/cnweather/provdata/pmsc/cmadecision/radar/jc_radar_'+name.toLowerCase()+'_jb.html';
 		}
 		//雷达拼图产品 每个产品是一个外部链接形式产品
-	$.extend(DATA_CONF,{
-		sk_randar_pt_china: {
-			'type':'img_json',
-			'name':'全国',
-			'url':getUrl('CHN')
-		}
-		,
-		sk_randar_pt_db: {
-			'type':'img_json',
-			'name':'东北',
-			'url':getUrl('DB')
-		}
-		,
-		sk_randar_pt_hb: {
-			'type':'img_json',
-			'name':'华北',
-			'url':getUrl('HB')
-		}
-		,
-		sk_randar_pt_hn: {
-			'type':'img_json',
-			'name':'华南',
-			'url':getUrl('HN')
-		}
-		,
-		sk_randar_pt_hz: {
-			'type':'img_json',
-			'name':'华中',
-			'url':getUrl('HZ')
-		}
-		,
-		sk_randar_pt_xb: {
-			'type':'img_json',
-			'name':'西北',
-			'url':getUrl('XB')
-		}
-		,
-		sk_randar_pt_xn: {
-			'type':'img_json',
-			'name':'西南',
-			'url':getUrl('XN')
-		}
-		,
-		sk_randar_pt_hd: {
-			'type':'img_json',
-			'name':'华东',
-			'url':getUrl('HD')
-		}
-	});
+		$.extend(DATA_CONF,{
+			sk_randar_pt_china: {
+				'type':'img_json',
+				'name':'全国',
+				'url':getUrl('CHN')
+			}
+			,
+			sk_randar_pt_db: {
+				'type':'img_json',
+				'name':'东北',
+				'url':getUrl('DB')
+			}
+			,
+			sk_randar_pt_hb: {
+				'type':'img_json',
+				'name':'华北',
+				'url':getUrl('HB')
+			}
+			,
+			sk_randar_pt_hn: {
+				'type':'img_json',
+				'name':'华南',
+				'url':getUrl('HN')
+			}
+			,
+			sk_randar_pt_hz: {
+				'type':'img_json',
+				'name':'华中',
+				'url':getUrl('HZ')
+			}
+			,
+			sk_randar_pt_xb: {
+				'type':'img_json',
+				'name':'西北',
+				'url':getUrl('XB')
+			}
+			,
+			sk_randar_pt_xn: {
+				'type':'img_json',
+				'name':'西南',
+				'url':getUrl('XN')
+			}
+			,
+			sk_randar_pt_hd: {
+				'type':'img_json',
+				'name':'华东',
+				'url':getUrl('HD')
+			}
+		});
 	})();
 	
 	// 卫星云图
 	$.extend(DATA_CONF,{
-		// FY-2卫星云图
-		sk_yt: {}
+		// 大陆区域彩色云图
+		sk_yt: {
+			'type': 'img_json',
+			'url': 'http://data.weather.com.cn/cnweather/provdata/pmsc/cmadecision/jc_yt_dl_wxzxcsyt.html'
+		}
 	});
-	// 强对流天气监测
+	// // 强对流天气监测
+	// $.extend(DATA_CONF,{
+	// 	// 短时强降水实时监测
+	// 	sk_qdl_js: {},
+	// 	// 大风实时监测
+	// 	sk_qdl_df: {},
+	// 	// 冰雹实时监测
+	// 	sk_qdl_bb: {},
+	// 	// 闪电实时监测
+	// 	sk_qdl_sd: {},
+	// 	// 雷暴实时监测
+	// 	sk_qdl_lb: {}
+	// });
 	$.extend(DATA_CONF,{
-		// 短时强降水实时监测
-		sk_qdl_js: {},
-		// 大风实时监测
-		sk_qdl_df: {},
-		// 冰雹实时监测
-		sk_qdl_bb: {},
-		// 闪电实时监测
-		sk_qdl_sd: {},
-		// 雷暴实时监测
-		sk_qdl_lb: {}
+		// PM10监测
+		sk_jc_pm10:  {},
+		// PM2.5监测
+		sk_jc_pm2d5:  {},
+		// 霾监测
+		sk_jc_m: {}
 	});
 	// 天气图分析
 	$.extend(DATA_CONF,{
@@ -324,7 +352,9 @@
 		sk_tqt_850: {
 			'type': 'img_json',
 			'url': 'http://data.weather.com.cn/cnweather/provdata/pmsc/cmadecision/jc_tqfx_850hpa.html'
-		}
+		},
+		// 地面气压场
+		sk_tqt_qyc: {}
 	});
 	</script>
 </body>

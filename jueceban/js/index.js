@@ -334,9 +334,14 @@ $(function() {
 	var widthMain = $main_container.width();
 	var heightMain = $main_container.height();
 	var hide_nav = function(){
+		isShowNav = false;
 		$body.removeClass('show_nav').addClass('off');
+		setTimeout(function(){
+			$body.removeClass('off');
+		},520);
 	}
 	var show_nav = function() {
+		isShowNav = true;
 		$body.addClass('show_nav').removeClass('off');
 	}
 	var $main = $('#main');
@@ -344,10 +349,8 @@ $(function() {
 	$('.btn_nav').click(function() {
 		$('#n_menu').fadeOut();
 		if(isShowNav){
-			isShowNav = false;
 			hide_nav();
 		}else{
-			isShowNav = true;
 			show_nav();
 		}		
 	});
@@ -503,7 +506,8 @@ $(function() {
 		/*对外提供可调用的接口*/
 		window.initData = function(data,title){
 			if(title){
-				header_title.html(title);
+				var unit = data.unit;
+				header_title.html(title + (unit?' ('+unit+')':''));
 			}
 			
 			var type = data.type;

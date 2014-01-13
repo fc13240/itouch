@@ -25,17 +25,21 @@
 				<li data-id="yb_js_48">48小时预报</li>
 				<li data-id="yb_js_72">72小时预报</li>
 
-				<li data-id="yb_qw_24" class="big">1-3天气温预报</li>
+				<!-- <li data-id="yb_qw_24" class="big">1-3天气温预报</li>
 				<li data-id="yb_qw_24">24小时预报 【*】</li>
 				<li data-id="yb_qw_max">最高气温</li>
 				<li data-id="yb_qw_48">48小时预报 【*】</li>
 				<li data-id="yb_qw_min">最低气温</li>
-				<li data-id="yb_qw_72">72小时预报 【*】</li>
+				<li data-id="yb_qw_72">72小时预报 【*】</li> -->
+				
+				<li data-id="yb_qw_max" class="big">气温预报</li>
+				<li data-id="yb_qw_max">24小时高温预报</li>
+				<li data-id="yb_qw_min">24小时低温预报 【*】</li>
 
-				<li data-id="yb_gw_48" class="big">1-3高温预报</li>
+				<!-- <li data-id="yb_gw_48" class="big">1-3天高温预报</li>
 				<li data-id="yb_gw_24">24小时高温</li>
 				<li data-id="yb_gw_48">48小时高温 【*】</li>
-				<li data-id="yb_gw_72">72小时高温 【*】</li>
+				<li data-id="yb_gw_72">72小时高温 【*】</li> -->
 
 				<li data-id="yb_wm_w" class="big">雾霾预报</li>
 				<li data-id="yb_wm_w">雾</li>
@@ -45,12 +49,14 @@
 				<li data-id="yb_jwdfsc_jw">降温 【*】</li>
 				<li data-id="yb_jwdfsc_sc">沙尘 【*】</li>
 
-				<li data-id="yb_zy_sw" class="big">专业预报</li>
+				<li data-id="yb_zy_sw" class="big">专业气象预报</li>
 				<li data-id="yb_zy_sw">水文气象 【*】</li>
 				<li data-id="yb_zy_jt">交通气象</li>
 				<li data-id="yb_zy_dz">地质灾害</li>
+				<li data-id="yb_zy_hx">森林草原火险 【*】</li>
+				<li data-id="yb_zy_wrtj">空气污染气象条件预报 【*】</li>
 
-				<li data-id="yb_sz_js_24" class="big">数值预报(CRAPES_MESO) 【*】</li>
+				<li data-id="yb_sz_js_24" class="big">数值预报(GRAPES_MESO) 【*】</li>
 				<li data-id="yb_sz_js_24">24小时降水预报 【*】</li>
 				<li data-id="yb_sz_wd_max">24小时2米最高温 【*】</li>
 				<li data-id="yb_sz_wd_min">24小时2米最低温 【*】</li>
@@ -59,10 +65,12 @@
 		<div id="main_container">
 			<div class="fix_layer top_layer">
 				<div class="btn_nav">
-					<span></span>
-					<span></span>
-					<span></span>
-					<div class="notice" id="n_menu"><i>点击这里查看所有分类</i><div><div></div></div></div>
+					<div>
+						<span></span>
+						<span></span>
+						<span></span>
+						<div class="notice" id="n_menu"><i>点击这里查看所有分类</i><div><div></div></div></div>
+					</div>
 				</div>
 				<h1>05点24小时变温</h1>
 				<div class="notice" id="n_back"><i>点击返回全国地图</i><div><div></div></div></div>
@@ -91,38 +99,48 @@
 		}
 	});
 
-	// 1-3天气温预报
+	// 气温预报
 	$.extend(DATA_CONF,{
-		// 24小时预报
-		yb_qw_24: {},
-		// 最高气温
+		// 24小时高温预报
 		yb_qw_max: {
-			'type': 'img_json',
-			'url': 'http://data.weather.com.cn/cnweather/provdata/pmsc/cmadecision/yb_wd_zg24.html'
-		},
-		// 48小时预报
-		yb_qw_48: {},
-		// 最低气温
-		yb_qw_min: {
-			'type': 'img_json',
-			'url': 'http://data.weather.com.cn/cnweather/provdata/pmsc/cmadecision/yb_wd_zd24.html'
-		},
-		// 72小时预报
-		yb_qw_72: {}
-	});
-
-	// 1-3高温预报
-	$.extend(DATA_CONF,{
-		// 24小时高温
-		yb_gw_24: {
 			'type': 'img_json',
 			'url': 'http://data.weather.com.cn/cnweather/provdata/pmsc/cmadecision/yb_wd_gw.html'
 		},
-		// 48小时高温
-		yb_gw_48: {},
-		// 72小时高温
-		yb_gw_72: {}
+		// 24小时低温预报
+		yb_qw_min: {}
 	});
+	// // 1-3天气温预报
+	// $.extend(DATA_CONF,{
+	// 	// 24小时预报
+	// 	yb_qw_24: {},
+	// 	// 最高气温
+	// 	yb_qw_max: {
+	// 		'type': 'img_json',
+	// 		'url': 'http://data.weather.com.cn/cnweather/provdata/pmsc/cmadecision/yb_wd_zg24.html'
+	// 	},
+	// 	// 48小时预报
+	// 	yb_qw_48: {},
+	// 	// 最低气温
+	// 	yb_qw_min: {
+	// 		'type': 'img_json',
+	// 		'url': 'http://data.weather.com.cn/cnweather/provdata/pmsc/cmadecision/yb_wd_zd24.html'
+	// 	},
+	// 	// 72小时预报
+	// 	yb_qw_72: {}
+	// });
+	
+	// // 1-3高温预报
+	// $.extend(DATA_CONF,{
+	// 	// 24小时高温
+	// 	yb_gw_24: {
+	// 		'type': 'img_json',
+	// 		'url': 'http://data.weather.com.cn/cnweather/provdata/pmsc/cmadecision/yb_wd_gw.html'
+	// 	},
+	// 	// 48小时高温
+	// 	yb_gw_48: {},
+	// 	// 72小时高温
+	// 	yb_gw_72: {}
+	// });
 
 	// 雾霾预报
 	$.extend(DATA_CONF,{
@@ -159,7 +177,11 @@
 		yb_zy_dz: {
 			'type': 'img_json',
 			'url': 'http://data.weather.com.cn/cnweather/provdata/pmsc/cmadecision/yb_dzzh_24.html'
-		}
+		},
+		// 森林草原火险
+		yb_zy_hx: {},
+		// 空气污染气象条件预报
+		yb_zy_wrtj: {}
 	});
 
 	// 数值预报(CRAPES_MESO)
