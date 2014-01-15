@@ -187,6 +187,7 @@
 		}
 		if(text){
 			try{
+				$time.find('i').text(text);
 				var toItem = $html.find('span.on').last();
 				var toItemLeft = toItem.position().left;
 				var toItemW = toItem.width();
@@ -200,13 +201,17 @@
 					var fixedLeft = relativeWidth - timeW;
 					sorrowLeft += toLeft - fixedLeft;
 					toLeft = fixedLeft;
+				}else if(toLeft < 0){
+					sorrowLeft += toLeft;
+					toLeft = 0;
 				}
+
 				$time.find('div').css({
 					left: sorrowLeft
 				});
 				$time.css({
 					left:  toLeft
-				}).show().find('i').text(text);
+				}).show();
 			}catch(e){}
 		}else{
 			$time.hide();
@@ -479,7 +484,7 @@ $(function() {
 		isScrolling = true;
 		clearTimeout(scrollTT);
 		scrollTT = setTimeout(function(){
-			isScrolling = false;console.log(isScrolling);
+			isScrolling = false;
 		},10);
 	});
 	var isScaling = false;
@@ -635,44 +640,41 @@ $(function() {
 								gm.load(mapData);
 					 			gm.render();
 					 			gm.zr.on("click",function(e){
-					 				// 防止在进行缩放或拖动时误操作
-					 				setTimeout(function(){
-					 					if(global_jsonid || isScaling || isScrolling){//防止多次点击
+				 					if(global_jsonid || isScaling || isScrolling){//防止多次点击
+					 					return;
+					 				}
+								 	var target = e.target;
+								 	if(target){
+									 	/*暂时以此来区分单站雷达点击*/
+						 				if(target.pshapeId && target.pshapeId != target.id){
 						 					return;
 						 				}
-									 	var target = e.target;
-									 	if(target){
-										 	/*暂时以此来区分单站雷达点击*/
-							 				if(target.pshapeId && target.pshapeId != target.id){
-							 					return;
-							 				}
-									 		var jsonid = target.id.replace('text','');
-									 		if(isNaN(jsonid)){
-										 		global_jsonid = jsonid;
-									 			getJson('./data/map/'+jsonid+'.geo.json',function(json){
-									 				resetToOldOffset(function(){
-									 					var $n_back = $('#n_back').show();
-									 					gm.clear();
-														gm.load(json,{showName:true});
-														gm.refreshWeather(jsonid);
-														var back = function(){
-															setState(true);
-															$n_back.remove();//删除提示
-															resetToOldOffset(function(){
-																global_jsonid = null;
-										 						gm.clear();
-																gm.load(mapData,{showName:false});
-																gm.refreshWeather();
-																$btn_back.remove();
-										 					});
-														}
-														var $btn_back = $('<div id="btn_back">返回</div>').appendTo($top_layer).click(back);
-														setState(false);
-									 				});
-										 		})
-									 		}
-									 	}
-					 				},20);
+								 		var jsonid = target.id.replace('text','');
+								 		if(isNaN(jsonid)){
+									 		global_jsonid = jsonid;
+								 			getJson('./data/map/'+jsonid+'.geo.json',function(json){
+								 				resetToOldOffset(function(){
+								 					var $n_back = $('#n_back').show();
+								 					gm.clear();
+													gm.load(json,{showName:true});
+													gm.refreshWeather(jsonid);
+													var back = function(){
+														setState(true);
+														$n_back.remove();//删除提示
+														resetToOldOffset(function(){
+															global_jsonid = null;
+									 						gm.clear();
+															gm.load(mapData,{showName:false});
+															gm.refreshWeather();
+															$btn_back.remove();
+									 					});
+													}
+													var $btn_back = $('<div id="btn_back">返回</div>').appendTo($top_layer).click(back);
+													setState(false);
+								 				});
+									 		})
+								 		}
+								 	}
 								 });
 							});
 						});
@@ -806,6 +808,14 @@ $(function() {
 					properties.image = './img/wind_icon/'+imgName+'.gif';
 					properties.width = 11;
 					properties.height = 13;
+				});
+				return data;
+			},
+			'parseQYC': function(data){
+				$.each(data.features,function(i,v){
+					var properties = v.properties;
+					var value = properties.value;
+					properties.value = 1000 + parseInt(value);
 				});
 				return data;
 			}

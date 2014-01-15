@@ -61,14 +61,14 @@
 				<li class="big" data-id="sk_jc_pm10">实况监测 【*】</li>
 				<li data-id="sk_jc_pm10">PM10监测 【*】</li>
 				<li data-id="sk_jc_pm2d5">PM2.5监测 【*】</li>
-				<li data-id="sk_jc_m">霾监测 【*】</li>
+				<li data-id="sk_jc_m">霾监测</li>
 
 				<li class="big" data-id="sk_tqt_dm">天气图分析</li>
 				<li data-id="sk_tqt_dm">亚欧地面分析</li>
 				<li data-id="sk_tqt_500">亚欧高空分析500hPa</li>
 				<li data-id="sk_tqt_700">亚欧高空分析700hPa</li>
 				<li data-id="sk_tqt_850">亚欧高空分析850hPa</li>
-				<li data-id="sk_tqt_qyc">地面气压场 【*】</li>
+				<li data-id="sk_tqt_qyc">地面气压场</li>
 			</ul>
 		</div>
 		<div id="main_container">
@@ -329,7 +329,14 @@
 		// PM2.5监测
 		sk_jc_pm2d5:  {},
 		// 霾监测
-		sk_jc_m: {}
+		sk_jc_m: {
+			'type': 'img',
+			'items': [
+				{'src':'./img/data/sk_jc_m/1017.jpg','text': '1月14日6时'},
+				{'src':'./img/data/sk_jc_m/1121.jpg','text': '1月14日12时'},
+				{'src':'./img/data/sk_jc_m/1227.jpg','text': '1月14日18时'}
+			]
+		}
 	});
 	// 天气图分析
 	$.extend(DATA_CONF,{
@@ -354,7 +361,18 @@
 			'url': 'http://data.weather.com.cn/cnweather/provdata/pmsc/cmadecision/jc_tqfx_850hpa.html'
 		},
 		// 地面气压场
-		sk_tqt_qyc: {}
+		sk_tqt_qyc: {
+			'type': 'json',
+			'unit': '百帕',
+			'fnname': 'parseQYC',
+			'items': [
+				{'src':'./data/sk_tqt_qyc/14011108.000.json','text': '1月11日8时'},
+				{'src':'./data/sk_tqt_qyc/14011208.000.json','text': '1月12日8时'},
+				{'src':'./data/sk_tqt_qyc/14011308.000.json','text': '1月13日8时'},
+				{'src':'./data/sk_tqt_qyc/14011408.000.json','text': '1月14日8时'},
+				{'src':'./data/sk_tqt_qyc/14011508.000.json','text': '1月15日8时'}
+			]
+		}
 	});
 	</script>
 </body>

@@ -45,21 +45,21 @@
 				<li data-id="yb_wm_w">雾</li>
 				<li data-id="yb_wm_m">霾</li>
 
-				<li data-id="yb_jwdfsc_jw" class="big">降温大风沙尘预报 【*】</li>
-				<li data-id="yb_jwdfsc_jw">降温 【*】</li>
-				<li data-id="yb_jwdfsc_sc">沙尘 【*】</li>
+				<li data-id="yb_jwdfsc_jw" class="big">降温大风沙尘预报</li>
+				<li data-id="yb_jwdfsc_jw">降温</li>
+				<li data-id="yb_jwdfsc_sc">沙尘</li>
 
 				<li data-id="yb_zy_sw" class="big">专业气象预报</li>
-				<li data-id="yb_zy_sw">水文气象 【*】</li>
+				<li data-id="yb_zy_sw">水文气象</li>
 				<li data-id="yb_zy_jt">交通气象</li>
 				<li data-id="yb_zy_dz">地质灾害</li>
-				<li data-id="yb_zy_hx">森林草原火险 【*】</li>
+				<li data-id="yb_zy_hx">森林草原火险</li>
 				<li data-id="yb_zy_wrtj">空气污染气象条件预报</li>
 
-				<li data-id="yb_sz_js_24" class="big">数值预报(GRAPES_MESO) 【*】</li>
+				<li data-id="yb_sz_js_24" class="big">数值预报(GRAPES_MESO)</li>
 				<li data-id="yb_sz_js_24">24小时降水预报</li>
-				<li data-id="yb_sz_wd_max">24小时2米最高温 【*】</li>
-				<li data-id="yb_sz_wd_min">24小时2米最低温 【*】</li>
+				<li data-id="yb_sz_wd_max">24小时2米最高温</li>
+				<li data-id="yb_sz_wd_min">24小时2米最低温</li>
 			</ul>
 		</nav>
 		<div id="main_container">
@@ -162,15 +162,36 @@
 	// 降温大风沙尘预报
 	$.extend(DATA_CONF,{
 		// 降温
-		yb_jwdfsc_jw: {},
+		yb_jwdfsc_jw: {
+			'type': 'img',
+			'items': [
+				{'src':'./img/data/yb_jwdfsc_jw/1109.jpg','text': '11月9日8时-11日8时'},
+				{'src':'./img/data/yb_jwdfsc_jw/1126.jpg','text': '11月26日8时-28日8时'},
+				{'src':'./img/data/yb_jwdfsc_jw/1127.jpg','text': '11月28日8时-29日8时'}
+			]
+		},
 		// 沙尘
-		yb_jwdfsc_sc: {}
+		yb_jwdfsc_sc: {
+			'type': 'img',
+			'items': [
+				{'src':'./img/data/yb_jwdfsc_sc/0308.jpg','text': '3月3日8时-9日8时'},
+				{'src':'./img/data/yb_jwdfsc_sc/0309.jpg','text': '3月9日8时-9日20时'},
+				{'src':'./img/data/yb_jwdfsc_sc/0311.jpg','text': '3月12日8时-13日8时'}
+			]
+		}
 	});
 
 	// 专业预报
 	$.extend(DATA_CONF,{
 		// 水文气象
-		yb_zy_sw: {},
+		yb_zy_sw: {
+			'type': 'img',
+			'items': [
+				{'src':'./img/data/yb_zy_sw/0823.png','text': '2013年8月23日20时~8月24日20时'},
+				{'src':'./img/data/yb_zy_sw/0923.png','text': '2013年9月23日20时~9月24日20时'},
+				{'src':'./img/data/yb_zy_sw/1006.png','text': '2013年10月23日20时~10月24日20时'}
+			]
+		},
 		// 交通气象
 		yb_zy_jt: {
 			'type': 'img_json',
@@ -182,7 +203,14 @@
 			'url': 'http://data.weather.com.cn/cnweather/provdata/pmsc/cmadecision/yb_dzzh_24.html'
 		},
 		// 森林草原火险
-		yb_zy_hx: {},
+		yb_zy_hx: {
+			'type': 'img',
+			'items': [
+				{'src':'./img/data/yb_zy_hx/0112.jpg','text': '1月12日20时-13日20时'},
+				{'src':'./img/data/yb_zy_hx/0113.jpg','text': '1月13日20时-14日20时'},
+				{'src':'./img/data/yb_zy_hx/0114.jpg','text': '1月14日20时-15日20时'}
+			]
+		},
 		// 空气污染气象条件预报
 		yb_zy_wrtj: {
 			'type': 'img_json',
@@ -198,9 +226,23 @@
 			'url': 'http://data.weather.com.cn/cnweather/provdata/pmsc/cmadecision/sz_meso_12h_ljjs_24.html'
 		},
 		// 24小时2米最高温
-		yb_sz_wd_max: {},
+		yb_sz_wd_max: {
+			'type': 'img',
+			'items': [
+				{'src':'./img/data/yb_sz_wd_max/20140114000002403.png','text': '1月14日0时-24时'},
+				{'src':'./img/data/yb_sz_wd_max/20140114000004803.png','text': '1月14日24时-48时'},
+				{'src':'./img/data/yb_sz_wd_max/20140114000007203.png','text': '1月14日48时-72时'}
+			]
+		},
 		// 24小时2米最低温
-		yb_sz_wd_min: {}
+		yb_sz_wd_min: {
+			'type': 'img',
+			'items': [
+				{'src':'./img/data/yb_sz_wd_min/20140114000002403.png','text': '1月14日0时-24时'},
+				{'src':'./img/data/yb_sz_wd_min/20140114000004803.png','text': '1月14日24时-48时'},
+				{'src':'./img/data/yb_sz_wd_min/20140114000007203.png','text': '1月14日48时-72时'}
+			]
+		}
 	});
 	</script>
 </body>

@@ -292,6 +292,7 @@ body.off .fix_layer{
 }
 #operator{
 	width:765px;height:765px;
+	margin-top: 43px;
 }
 #operator img{
 	width: 100%;
