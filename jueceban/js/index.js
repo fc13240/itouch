@@ -901,13 +901,18 @@ $(function() {
 			columnId = parseInt(columnId)||0;
 			if(columnId >= 0 && appinfo){
 				var sortInfo = appinfo.list[columnId]['small'];
-				var html = '';
-				$.each(sortInfo,function(i,v){
-					html += '<li class="big">'+v.name+'</li>';
-					$.each(v.small,function(i1,v1){
-						html += '<li data-url="'+v1.dataurl+'">'+v1.name+'</li>';
+				if(sortInfo){
+					var html = '';
+					$.each(sortInfo,function(i,v){
+						var smallSort = v.small;
+						html += '<li class="big"'+(smallSort?'':' data-url="'+v.dataurl+'"')+'>'+v.name+'</li>';
+						if(smallSort){
+							$.each(v.small,function(i1,v1){
+								html += '<li data-url="'+v1.dataurl+'">'+v1.name+'</li>';
+							});
+						}
 					});
-				});
+				}
 				var initTarget = $sort_nav.html(html).find(':not(.big)').first();
 				initSortData(initTarget.data('url'),initTarget.text());
 			}
