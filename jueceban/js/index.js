@@ -318,6 +318,20 @@
 		}
 	}
 })(this);
+(function(global){
+	var cache = {};
+	global.getJson = function(url, callback) {
+		var cacheVal = cache[url];
+		if(cacheVal){
+			callback(cacheVal);
+		}else{
+			$.getJSON(url,function(data){
+				cache[url] = data;
+				callback(data);
+			});
+		}
+	}
+})(this);
 /*android和js交互*/
 (function(global){
 	global.onBack = function(){
@@ -327,6 +341,24 @@
 	if(window.demo){
 		global.setState = function(flag){
 			window.demo[flag?'setCanBack':'setNoBack']();
+		}
+	}
+})(this);
+/*操作缓存*/
+(function(global){
+	global.Cache = {
+		set: function(name,val){
+			try {
+                var json = JSON.stringify(val);
+                localStorage[name] = json;
+                return true;
+            } catch (e) {}
+		},
+		get: function(name){
+			var val = localStorage[name];
+			if(val != undefined && val != null){
+				return JSON.parse(val);
+			}
 		}
 	}
 })(this);
@@ -547,19 +579,18 @@ $(function() {
 		var global_jsonid;
 		/*对外提供可调用的接口*/
 		window.initData = function(data,title){
+			if(player){
+				player.hide();
+				player = null;
+			}
 			if(title){
 				var unit = data.unit;
 				header_title.html(title + (unit?' ('+unit+')':''));
 			}
 			
 			var type = data.type;
-			var items = data.items;
+			var items = data.items || data.imgs;
 			var renderFn;
-			/*显示提示文字*/
-			var showText = function(toIndex,itemsData){
-				var text = (itemsData || items)[toIndex].text;
-				player.showText(text||'');
-			}
 			/*清除map相关数据*/
 			var clearMap = function(){
 				$operator.html('');
@@ -579,7 +610,8 @@ $(function() {
 					$operator.html($('<img>').on('load',function(){
 						Loading.hide();
 						nextFn && nextFn();
-					}).attr('src',img_items[toIndex]['src']));
+					}).attr('src',img_items[toIndex]['i']));
+					return img_items[toIndex]['n']
 				}
 			}
 			/*初始化播放器*/
@@ -587,8 +619,8 @@ $(function() {
 				var len = items_arr.length;
 				if(len > 1){
 					player = new Player(len,function(toIndex,nextFn){
-						renderFn(toIndex,nextFn);
-						showText(toIndex,items_arr);
+						var text = renderFn(toIndex,nextFn);
+						player.showText(text||'');
 					},data.tuli);
 				}			
 				renderFn(0);//初始化第一个数据
@@ -605,7 +637,7 @@ $(function() {
 					});
 				}
 				return;
-			}else if(type == 'img'){//渲染图片
+			}else if(type == 'multipleimg'){//渲染图片
 				clearMap();
 				renderFn = renderImg(items);
 			}else if(type == 'json'){//渲染地图数据
@@ -685,6 +717,7 @@ $(function() {
 						gm.updateCfg(conf,true);
 						fn();
 					}
+					return items[toIndex]['text']
 				}
 			}else if(type == 'hightchart'){
 				clearMap();
@@ -824,18 +857,72 @@ $(function() {
 			}
 		}
 		/*左侧导航点击事件*/
-		var $sort_nav = $('#sort_nav ul').click(function(e){
+		// var $sort_nav = $('#sort_nav ul').click(function(e){
+		// 	var target = $(e.target);
+		// 	if(target.is('li')){
+		// 		hide_nav();
+		// 		var data_id = target.data('id');
+		// 		if(data_id){
+		// 			_init(data_id);
+		// 		}
+		// 	}
+		// }).on('SwipeLeft', hide_nav);
+		// TouchEvent($sort_nav);
+
+		// _init(initDataId);
+	})();
+	(function(){
+		/*左侧导航点击事件*/
+		var $sort_nav = $('#sort_nav ul').html('').click(function(e){
 			var target = $(e.target);
 			if(target.is('li')){
-				hide_nav();
-				var data_id = target.data('id');
-				if(data_id){
-					_init(data_id);
+				var data_url = target.data('url');
+				if(target.is('.big') && !data_url){
+					target.next().click();
+					return;
 				}
+
+				hide_nav();
+				initSortData(data_url,target.text());
 			}
 		}).on('SwipeLeft', hide_nav);
 		TouchEvent($sort_nav);
-
-		_init(initDataId);
+		var initSortData = function(url,text){
+			if(!url){
+				return;
+			}
+			Loading.show();
+			getJson(url,function(d){
+				Loading.hide();
+				initData(d,text);
+			});
+		}
+		var init = function(appinfo){
+			columnId = parseInt(columnId)||0;
+			if(columnId >= 0 && appinfo){
+				var sortInfo = appinfo.list[columnId]['small'];
+				var html = '';
+				$.each(sortInfo,function(i,v){
+					html += '<li class="big">'+v.name+'</li>';
+					$.each(v.small,function(i1,v1){
+						html += '<li data-url="'+v1.dataurl+'">'+v1.name+'</li>';
+					});
+				});
+				var initTarget = $sort_nav.html(html).find(':not(.big)').first();
+				initSortData(initTarget.data('url'),initTarget.text());
+			}
+		}
+		var appinfo;// = Cache.get('appinfo');
+		var columnId = Cache.get('columnId');
+		if(appinfo){
+			init(appinfo);
+		}else{
+			Loading.show();
+			getJson('http://data.weather.com.cn/decision/config/config_23.html?'+Math.random(),function(appInfo){
+				Loading.hide();
+				Cache.set('appinfo',appInfo);
+				init(appInfo);
+			})
+		}
 	})();
 })
