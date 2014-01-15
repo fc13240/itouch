@@ -60,6 +60,8 @@
 				<li data-id="yb_sz_js_24">24小时降水预报</li>
 				<li data-id="yb_sz_wd_max">24小时2米最高温</li>
 				<li data-id="yb_sz_wd_min">24小时2米最低温</li>
+				<li data-id="yb_sz_sq_fsl">700hPa水汽通量+700hPa风矢量预报</li>
+				<li data-id="yb_sz_10f">10m风场预报</li>
 			</ul>
 		</nav>
 		<div id="main_container">
@@ -242,6 +244,16 @@
 				{'src':'./img/data/yb_sz_wd_min/20140114000004803.png','text': '1月14日24时-48时'},
 				{'src':'./img/data/yb_sz_wd_min/20140114000007203.png','text': '1月14日48时-72时'}
 			]
+		},
+		// 700hPa水汽通量+700hPa风矢量预报
+		yb_sz_sq_fsl: {
+			'type': 'img_json',
+			'url': 'http://data.weather.com.cn/cnweather/provdata/pmsc/cmadecision/sz_meso_700sqtlsd_700fc_24.html'
+		},
+		// 10m风场预报
+		yb_sz_10f: {
+			'type': 'img_json',
+			'url': 'http://data.weather.com.cn/cnweather/provdata/pmsc/cmadecision/sz_meso_10m_fc_24.html'
 		}
 	});
 	</script>

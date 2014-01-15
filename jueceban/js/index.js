@@ -480,12 +480,13 @@ $(function() {
 		}
 		isScaling = false;
 	})
-	win.scroll(function(){
+	win.scroll(function(e){
 		isScrolling = true;
 		clearTimeout(scrollTT);
 		scrollTT = setTimeout(function(){
 			isScrolling = false;
-		},10);
+		},50);
+		
 	});
 	var isScaling = false;
 	var isScrolling = false;
@@ -640,41 +641,43 @@ $(function() {
 								gm.load(mapData);
 					 			gm.render();
 					 			gm.zr.on("click",function(e){
-				 					if(global_jsonid || isScaling || isScrolling){//防止多次点击
-					 					return;
-					 				}
-								 	var target = e.target;
-								 	if(target){
-									 	/*暂时以此来区分单站雷达点击*/
-						 				if(target.pshapeId && target.pshapeId != target.id){
-						 					return;
-						 				}
-								 		var jsonid = target.id.replace('text','');
-								 		if(isNaN(jsonid)){
-									 		global_jsonid = jsonid;
-								 			getJson('./data/map/'+jsonid+'.geo.json',function(json){
-								 				resetToOldOffset(function(){
-								 					var $n_back = $('#n_back').show();
-								 					gm.clear();
-													gm.load(json,{showName:true});
-													gm.refreshWeather(jsonid);
-													var back = function(){
-														setState(true);
-														$n_back.remove();//删除提示
-														resetToOldOffset(function(){
-															global_jsonid = null;
-									 						gm.clear();
-															gm.load(mapData,{showName:false});
-															gm.refreshWeather();
-															$btn_back.remove();
-									 					});
-													}
-													var $btn_back = $('<div id="btn_back">返回</div>').appendTo($top_layer).click(back);
-													setState(false);
-								 				});
-									 		})
-								 		}
-								 	}
+									setTimeout(function(){
+										if(global_jsonid || isScaling || isScrolling){//防止多次点击
+											return;
+										}
+										var target = e.target;
+										if(target){
+											/*暂时以此来区分单站雷达点击*/
+											if(target.pshapeId && target.pshapeId != target.id){
+												return;
+											}
+											var jsonid = target.id.replace('text','');
+											if(isNaN(jsonid)){
+												global_jsonid = jsonid;
+												getJson('./data/map/'+jsonid+'.geo.json',function(json){
+													resetToOldOffset(function(){
+														var $n_back = $('#n_back').show();
+														gm.clear();
+														gm.load(json,{showName:true});
+														gm.refreshWeather(jsonid);
+														var back = function(){
+															setState(true);
+															$n_back.remove();//删除提示
+															resetToOldOffset(function(){
+																global_jsonid = null;
+																gm.clear();
+																gm.load(mapData,{showName:false});
+																gm.refreshWeather();
+																$btn_back.remove();
+															});
+														}
+														var $btn_back = $('<div id="btn_back">返回</div>').appendTo($top_layer).click(back);
+														setState(false);
+													});
+												})
+											}
+										}
+									},10);
 								 });
 							});
 						});
