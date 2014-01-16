@@ -250,7 +250,7 @@
 	    	// see http://msdn.microsoft.com/en-us/library/ms536429(VS.85).aspx
 	      node.getAttribute("src", 4)
 	}
-	global.getJson = function(url, callback) {
+	global.getJson1 = function(url, callback) {
 		var val = cache[url];
 		if (val) {
 			return val;
@@ -319,16 +319,31 @@
 	}
 })(this);
 (function(global){
+	/*优先处理Ajax请求，否则Jsonp请求（方便本地调试）*/
 	var cache = {};
 	global.getJson = function(url, callback) {
 		var cacheVal = cache[url];
 		if(cacheVal){
 			callback(cacheVal);
 		}else{
-			$.getJSON(url,function(data){
-				cache[url] = data;
-				callback(data);
-			});
+			$.ajax({
+	            async: true,
+	            cache: true,
+	            url: url,
+	            type: 'GET',
+	            dataType: 'json',
+	            timeout: 5000,
+	            success: function(json) {
+	                cache[url] = json;
+					callback(json);
+	            },
+	            complete: function(XMLHttpRequest, textStatus) {
+	                
+	            },
+	            error: function(xhr) {
+	                getJson1(url,callback);
+	            }
+	        });
 		}
 	}
 })(this);
@@ -579,6 +594,12 @@ $(function() {
 		var global_jsonid;
 		/*对外提供可调用的接口*/
 		window.initData = function(data,title){
+			if(typeof data == 'string'){
+				getJson(data,function(d){
+					initData(d,title);
+				});
+				return;
+			}
 			if(player){
 				player.hide();
 				player = null;
@@ -641,6 +662,14 @@ $(function() {
 				clearMap();
 				renderFn = renderImg(items);
 			}else if(type == 'json'){//渲染地图数据
+				try{
+					/*对配置文件里的点击事件进行处理（尤其是单站雷达）*/
+					var click = data.config.weatherStyle.onclick;
+					if(typeof click == 'string'){
+						// json文件里不允许定义函数
+						data.config.weatherStyle.onclick = fnObj[click];
+					}
+				}catch(e){}
 				var conf = $.extend(true,{ 
 					container: 'operator'
 				},data.config);
@@ -823,6 +852,7 @@ $(function() {
 			'pm2.5': function(){
 				draw_highChart("#operator", "全国实时空气质量指数(AQI) 后十名", "", ["西安", "渭南", "咸阳", "宝鸡", "哈尔滨", "菏泽", "济宁", "徐州", "枣庄", "沈阳"], [441, 365, 341, 340, 303, 269, 255, 248, 247, 245], "#B98A00");
 			},
+			/*解析风力风向数据*/
 			'parseWind': function(data){
 				$.each(data.features,function(i,v){
 					var properties = v.properties;
@@ -847,6 +877,7 @@ $(function() {
 				});
 				return data;
 			},
+			/*解析气压场数据*/
 			'parseQYC': function(data){
 				$.each(data.features,function(i,v){
 					var properties = v.properties;
@@ -854,6 +885,11 @@ $(function() {
 					properties.value = 1000 + parseInt(value);
 				});
 				return data;
+			},
+			/*单站雷达点击事件*/
+			'randarClick': function(e){
+				var id = e.target.id;
+				initData("http://data.weather.com.cn/cnweather/provdata/pmsc/cmadecision/radar/jc_radar_"+id.toLowerCase()+"_jb.html","单站雷达 - "+e.target.style.title);
 			}
 		}
 		/*左侧导航点击事件*/
@@ -917,13 +953,13 @@ $(function() {
 				initSortData(initTarget.data('url'),initTarget.text());
 			}
 		}
-		var appinfo;// = Cache.get('appinfo');
+		var appinfo = Cache.get('appinfo');
 		var columnId = Cache.get('columnId');
 		if(appinfo){
 			init(appinfo);
 		}else{
 			Loading.show();
-			getJson('http://data.weather.com.cn/decision/config/config_23.html?'+Math.random(),function(appInfo){
+			getJson('http://data.weather.com.cn/decision/config/config_23.html',function(appInfo){
 				Loading.hide();
 				Cache.set('appinfo',appInfo);
 				init(appInfo);

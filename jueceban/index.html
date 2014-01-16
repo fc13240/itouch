@@ -229,21 +229,21 @@
 		sk_randar: {
 			'type': 'json',
 			'items': [
-				{'src':'./data/singleradar.json'}
+				{'src':'./data/sk_randar/singleradar.json'}
 			],
 			'color': 'radar',
 			'config':{
-					weatherStyle:{
-						r: 15,
-						onclick: function(e){
-							var id = e.target.id;
-							initData({
-								'type': 'img_json',
-								'url':'http://data.weather.com.cn/cnweather/provdata/pmsc/cmadecision/radar/jc_radar_'+id.toLowerCase()+'_jb.html'
-							},'单站雷达 - '+e.target.style.title);
-						}
+				weatherStyle:{
+					r: 15,
+					onclick: function(e){
+						var id = e.target.id;
+						initData({
+							'type': 'img_json',
+							'url':'http://data.weather.com.cn/cnweather/provdata/pmsc/cmadecision/radar/jc_radar_'+id.toLowerCase()+'_jb.html'
+						},'单站雷达 - '+e.target.style.title);
 					}
 				}
+			}
 		}
 	});
 	(function(){
