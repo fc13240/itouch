@@ -672,7 +672,7 @@ $(function() {
 				}catch(e){}
 				var conf = $.extend(true,{ 
 					container: 'operator'
-				},data.config);console.log(conf);
+				},data.config);
 				var colorType = COLOR[data.color];
 				var parseFn = fnObj[data.fnname];
 				renderFn = function(toIndex,nextFn){
