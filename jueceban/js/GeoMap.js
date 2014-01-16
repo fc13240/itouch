@@ -63,7 +63,7 @@ define("GeoMap",["zrender","zrender/tool/util"],
 							color : '#00f',
 							textColor : '#f00',
 							textPosition :'bottom',
-							r:5
+							r:10
 						}
 					}
 				};

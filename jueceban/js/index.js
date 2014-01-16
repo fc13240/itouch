@@ -672,7 +672,7 @@ $(function() {
 				}catch(e){}
 				var conf = $.extend(true,{ 
 					container: 'operator'
-				},data.config);
+				},data.config);console.log(conf);
 				var colorType = COLOR[data.color];
 				var parseFn = fnObj[data.fnname];
 				renderFn = function(toIndex,nextFn){
@@ -934,9 +934,14 @@ $(function() {
 			});
 		}
 		var init = function(appinfo){
-			columnId = parseInt(columnId)||0;
+			columnId = parseInt(columnId);
 			if(columnId >= 0 && appinfo){
-				var sortInfo = appinfo.list[columnId]['small'];
+				for(var list = appinfo.list,i=0,j=list.length;i<j;i++){
+					if(list[i].id == columnId){
+						var sortInfo = list[i]['small'];
+						break;
+					}
+				}
 				if(sortInfo){
 					var html = '';
 					$.each(sortInfo,function(i,v){
