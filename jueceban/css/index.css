@@ -368,3 +368,15 @@ body.off .fix_layer{
 	left: auto;
 }
 
+table{
+	background-color:#ccc;
+}
+table tr:nth-child(2n+1) td{
+	background-color: #eee;
+}
+table td{
+	background-color: white;
+	padding: 3px 5px;
+	min-width: 100px;
+	text-align: center;
+}

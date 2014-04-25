@@ -614,15 +614,17 @@ $(function() {
 			var renderFn;
 			/*清除map相关数据*/
 			var clearMap = function(){
+				if(isInitMap && gm){
+					gm.zr.clear();
+					gm.zr.un();//清除已经绑定的事件
+
+					isInitMap = false;
+					global_jsonid = null;
+				}
 				$operator.html('');
 				$('#n_back').remove();
 				$('#btn_back').remove();
 				setState(true);
-				if(isInitMap && gm){
-					gm.zr.clear();
-					isInitMap = false;
-					global_jsonid = null;
-				}
 			}
 			/*根据数据得到一个渲染函数*/
 			var renderImg = function(img_items){
@@ -757,6 +759,26 @@ $(function() {
 			}else if (type == 'weburl'){
 				window.location.href='wisp://pUrl.wi?url='+data.url;
 				return;
+			}else if(type == 'table'){
+				clearMap();
+				var rows = data.rows;
+				var title = data.title;
+				if($.isArray(rows) && $.isArray(title)){
+					var html = '<table>';
+					rows.unshift(title);
+					$.each(rows,function(i,v){
+						html += '<tr>';
+						$.each(v,function(i1,v1){
+							html += '<td>'+v1+'</td>';
+						})
+						html += '</tr>';
+					});
+					html += '</table>';
+					resetToOldOffset(function(){
+						$operator.html(html);
+						scrollTo(0,0)
+					});
+				}
 			}
 			if(renderFn){
 				initPlayer(items,renderFn);
@@ -888,6 +910,7 @@ $(function() {
 			},
 			/*单站雷达点击事件*/
 			'randarClick': function(e){
+				console.log(e);
 				var id = e.target.id;
 				initData("http://data.weather.com.cn/cnweather/provdata/pmsc/cmadecision/radar/jc_radar_"+id.toLowerCase()+"_jb.html","单站雷达 - "+e.target.style.title);
 			}
@@ -960,15 +983,19 @@ $(function() {
 		}
 		var appinfo = Cache.get('appinfo');
 		var columnId = Cache.get('columnId');
-		if(appinfo){
-			init(appinfo);
-		}else{
+		var getAppinfo = function(callback){
 			Loading.show();
 			getJson('http://data.weather.com.cn/decision/config/config_23.html',function(appInfo){
 				Loading.hide();
 				Cache.set('appinfo',appInfo);
-				init(appInfo);
+				callback && callback(appInfo);
 			})
+		}
+		if(appinfo){
+			init(appinfo);
+			setTimeout(getAppinfo,2000);
+		}else{
+			getAppinfo(init);
 		}
 	})();
 })
